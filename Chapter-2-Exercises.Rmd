@@ -1,0 +1,8 @@
+---
+title: "Chaper 2 Exercises"
+author: "Jonathan Bryan"
+date: "May 7, 2017"
+output: html_document
+---
+
+## 1. 
