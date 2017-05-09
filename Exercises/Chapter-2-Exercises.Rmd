@@ -19,7 +19,7 @@ Many flexible models can more easily and accurately model non-linear behavior so
 #### (d) The variance of the error terms, i.e. $σ_2 = Var(\epsilon)$, is extremely high.
 Flexible models tend to "chase" or closely follow the variation found in the training set data. This leads to high variability each time the model is run on different sets of training data. Therefore, increasing the variability of the noise in the data will increase the variability in the flexible model which is sub optimal. Therefore, a more flexible model may not be preferred.
 
-### Explain whether each scenario is a classification or regression problem, and indicate whether we are most interested in inference or prediction. Finally, provide n and p.
+### 2. Explain whether each scenario is a classification or regression problem, and indicate whether we are most interested in inference or prediction. Finally, provide n and p.
 
 #### (a) We collect a set of data on the top 500 firms in the US. For each firm we record profit, number of employees, industry and the CEO salary. We are interested in understanding which factors affect CEO salary.
 This is a regression problem with the goal of inference (n = 500 and p = 4).
@@ -32,20 +32,79 @@ This is a classification problem with the goal of prediction (n = 20 and p = 13)
 #### (c) We are interesting in predicting the % change in the US dollar in relation to the weekly changes in the world stock markets. Hence we collect weekly data for all of 2012. For each week we record the % change in the dollar, the % change in the US market, the % change in the British market, and the % change in the German market.
 This is a regression problem with the goal of prediction (n = 366 and p = 3).
 
-### We now revisit the bias-variance decomposition. 
+### 3. We now revisit the bias-variance decomposition. 
 
 #### (a) Provide a sketch of typical (squared) bias, variance, training error, test error, and Bayes (or irreducible) error curves, on a single plot, as we go from less flexible statistical learning methods towards more flexible approaches. The x-axis should represent the amount of flexibility in the method, and the y-axis should represent the values for each curve. There should be five curves. Make sure to label each one.
 ```{r}
+x = seq(1,100,1)
+irre_y = rep(30,100)
+train_y = (1/100)*(x-100)^2
+bias_y = (1/150)*(x-100)^2
+variance_y = (1/200)*(x)^(2.1)
+test_y = bias_y + variance_y + irre_y
 
+
+plot(irre_x, irre_y, xlim = c(0,100), ylim=c(0,100), xlab = "Model Flexibility", ylab = "Root Mean Squared Error", col = "black") #Irreducible error
+lines(x,train_y, col="green", lwd = 2) #Training RMSE
+lines(x,bias_y, col = "red", lwd = 2) #Squared Bias
+lines(x,variance_y, col = "purple", lwd = 2) #Variance
+lines(x,test_y, col = "blue", lwd = 2) #Testing RMSE
+text(x = 10 , y = 25, labels = "Irreducible Error", cex = 0.8)
+text(x = 70 , y = 20, labels = "Training RMSE", cex = 0.8, col="green")
+text(x = 5 , y = 45, labels = "Squared Bias", cex = 0.8, col = "red")
+text(x = 70 , y = 50, labels = "Variance", cex = 0.8, col = "purple")
+text(x = 50 , y = 75, labels = "Testing RMSE", cex = 0.8, col = "blue" )
+```
+
+####(b)
+Bias decreases as the model is better able to account for the variation in individual data points through increasingly flexibility and relaxing of persistent model constraints. Variance of the model increases as the model tracks the training data more closely and subsequent iterations of model generation produce very different results depending on the training data used. Training error consistently decreases as more flexible models are able to account for the variation in the training data and bias steadily decreases. Test error consistently decrease as the rate of bias reduction is higher than the rate of increase in model variance. Eventually, the rate of model variance overtakes the rate of model bias reduction and the overall test error begins to increase. The test error can not go below the level of irreducible error. Irreducible error is the level of measurement error inherent in the data and cannot be reduced in the model.
+
+### 4. You will now think of some real-life applications for statistical learning.
+
+#### (a) Describe three real-life applications in which classification might be useful. Describe the response, as well as the predictors. Is the goal of each application inference or prediction? Explain your answer.
+
+1. A zoologist wants to predict the taxononmy of animal remains found in a keystone predator. The zoologist has over 1,000 possible classifications of species and uses the genetic material to build the model. This is a classification problem with the goal of prediction.The response variable can be 1,000 different discrete categories that have no "order" or "ranking".
+
+2. An investment firm wants to know whether positive or negative earnings reports by media companies are influenced by public sentiment on Twitter. This is an inferential classification problem with positive and negative earnings reports of media companies as the response and metrics that represent public sentiment on Twitter as the predictor variables.
+
+3. A financial consulting company uses a stress test on banking clients to determing their firms ability to weather financial crises. The firm predicts has multiple different scenarios, each with a pass or fail response. The consulting company also uses the stress test to advise clients on best practicies to avoid failure. This is a classification problem with both prediciton and inference as a goal. The response is the multiple different stress test scenrarios each with a pass or fail factor.
+
+
+#### (b) Describe three real-life applications in which regression might be useful. Describe the response, as well as the predictors. Is the goal of each application inference or prediction? Explain your answer.
+
+1. A large retail chain wants to predict the change in a specific product's sales based upon the store placement and the combination of other store products in close proximity. This is a regression  question, where the response is the change in store sales and the predictors are store placement location and categorical variables representing different items placed next to the product.
+
+2. An educational institution wants to predict graduate student's "grit" through physical and mental assesments. Grit is measured on a continuous numerical scale from 1 to 10, while the phyisical and mental assesments are a combination of categorical and numerical data. This is a regression problem with the goal of prediction. The response variable is grit while the assesment metrics are the predictors.
+
+
+
+
+#### (c) Describe three real-life applications in which cluster analysis
+might be useful.
+
+
+
+
+#### 8.
+###(a)
+```{r}
+library(ISLR)
+college = College
+fix(college)
+```
+
+###(b)
+```{r}
 
 
 ```
 
-
-
-
-
-
+###(c)
+```{r}
+summary(college) #i
+pairs(college[,1:10]) #ii
+plot(college$Outstate,college$Private ) #iii
+```
 
 
 
