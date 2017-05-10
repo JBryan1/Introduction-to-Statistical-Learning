@@ -2,7 +2,9 @@
 title: "Chaper 2 Exercises"
 author: "Jonathan Bryan"
 date: "May 7, 2017"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
 ---
 
 ### 1. For each of parts (a) through (d), indicate whether we would generally expect the performance of a flexible statistical learning method to be better or worse than an inflexible method. Justify your answer.
@@ -44,7 +46,7 @@ variance_y = (1/200)*(x)^(2.1)
 test_y = bias_y + variance_y + irre_y
 
 
-plot(irre_x, irre_y, xlim = c(0,100), ylim=c(0,100), xlab = "Model Flexibility", ylab = "Root Mean Squared Error", col = "black") #Irreducible error
+plot(x, irre_y, xlim = c(0,100), ylim=c(0,100), xlab = "Model Flexibility", ylab = "Root Mean Squared Error", col = "black") #Irreducible error
 lines(x,train_y, col="green", lwd = 2) #Training RMSE
 lines(x,bias_y, col = "red", lwd = 2) #Squared Bias
 lines(x,variance_y, col = "purple", lwd = 2) #Variance
