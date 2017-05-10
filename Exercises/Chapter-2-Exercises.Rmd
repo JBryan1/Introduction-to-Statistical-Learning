@@ -63,26 +63,29 @@ Bias decreases as the model is better able to account for the variation in indiv
 
 #### (a) Describe three real-life applications in which classification might be useful. Describe the response, as well as the predictors. Is the goal of each application inference or prediction? Explain your answer.
 
-1. A zoologist wants to predict the taxononmy of animal remains found in a keystone predator. The zoologist has over 1,000 possible classifications of species and uses the genetic material to build the model. This is a classification problem with the goal of prediction.The response variable can be 1,000 different discrete categories that have no "order" or "ranking".
+1. A zoologist wants to predict the taxonomy of animal remains found in a keystone predator. The zoologist has over 1,000 possible classifications of species and uses the genetic material to build the model. This is a classification problem with the goal of prediction.The response variable can be 1,000 different discrete categories that have no "order" or "ranking".
 
 2. An investment firm wants to know whether positive or negative earnings reports by media companies are influenced by public sentiment on Twitter. This is an inferential classification problem with positive and negative earnings reports of media companies as the response and metrics that represent public sentiment on Twitter as the predictor variables.
 
-3. A financial consulting company uses a stress test on banking clients to determing their firms ability to weather financial crises. The firm predicts has multiple different scenarios, each with a pass or fail response. The consulting company also uses the stress test to advise clients on best practicies to avoid failure. This is a classification problem with both prediciton and inference as a goal. The response is the multiple different stress test scenrarios each with a pass or fail factor.
+3. A financial consulting company uses a stress test on banking clients to determine their firms ability to weather financial crises. The firm predicts has multiple different scenarios, each with a pass or fail response. The consulting company also uses the stress test to advise clients on best practices to avoid failure. This is a classification problem with both prediction and inference as a goal. The response is the multiple different stress test scenarios each with a pass or fail factor.
 
 
 #### (b) Describe three real-life applications in which regression might be useful. Describe the response, as well as the predictors. Is the goal of each application inference or prediction? Explain your answer.
 
 1. A large retail chain wants to predict the change in a specific product's sales based upon the store placement and the combination of other store products in close proximity. This is a regression  question, where the response is the change in store sales and the predictors are store placement location and categorical variables representing different items placed next to the product.
 
-2. An educational institution wants to predict graduate student's "grit" through physical and mental assesments. Grit is measured on a continuous numerical scale from 1 to 10, while the phyisical and mental assesments are a combination of categorical and numerical data. This is a regression problem with the goal of prediction. The response variable is grit while the assesment metrics are the predictors.
+2. An educational institution wants to predict graduate student's "grit" through physical and mental assessments. Grit is measured on a continuous numerical scale from 1 to 10, while the physical and mental assessments are a combination of categorical and numerical data. This is a regression problem with the goal of prediction. The response variable is grit while the assessment metrics are the predictors.
+
+3. A healthcare system wants to understand the greatest sources of medical waste in dollars at the medical department level using data from physician, supply chain and medical records. This is a regression problem with the goal of inference. The response variable is the dollars of medical waste, on a continuous scale.
 
 
+#### (c) Describe three real-life applications in which cluster analysis might be useful.
 
+1. A large retail chain is testing a new product for launch and wants to segment the customer population currently buying the product in test markets. A Cluster analysis could be run to determine the distance "types" of customers who enjoy the product.
 
-#### (c) Describe three real-life applications in which cluster analysis
-might be useful.
+2. An oil exploration company would like to classify different types of oil extraction sites based upon return on investment, safety incidents, environmental impact, and other variables. There is no response variable so we can cluster the oil extraction sites based on similarity.
 
-
+3. A toy company would like to market a new toy to a particular high-value customer segment. They would like to to know which attributes are clustered around different market segments and then blend those attributes together to create the new toy to appeal to the new customer segment. Cluster analysis can be run on the current toys to ascertain which attributes are closely associated and then match those clusters to market segments.
 
 
 #### 8.
@@ -90,13 +93,11 @@ might be useful.
 ```{r}
 library(ISLR)
 college = College
-fix(college)
 ```
 
 ###(b)
 ```{r}
-
-
+fix(college)
 ```
 
 ###(c)
@@ -104,7 +105,76 @@ fix(college)
 summary(college) #i
 pairs(college[,1:10]) #ii
 plot(college$Outstate,college$Private ) #iii
+
+college$Elite = rep("No", nrow(college)) #iv
+college$Elite[college$Top10perc > 50 ] = "Yes"
+college$Elite = as.factor(college$Elite)
+summary(college$Elite)#Number of elite colleges
+plot(college$Outstate, college$Elite)
+
+par(mfrow=c(2,2)) #v
+hist(college$Accept)
+hist(college$perc.alumni)
+hist(college$Top10perc)
+hist(college$Top25perc)
+
+#vi Continue exploring data and brief summary
+college_mcs = sapply(college, is.numeric)
+college_mcs = college[college_mcs]
+college_mcs = sapply(college_mcs, function(college_mcs) (college_mcs - mean(college_mcs))/sd(college_mcs))#mean centered and scaled data
+boxplot(college_mcs)
+
+plot(college$Elite, college$Apps)
+```
+We observe that many of the numeric variables have fat tail empirical distributions that skew towards positive values. We also observe that elite institutions receive many more applications than non-elite institutions.
+
+#### 9. This exercise involves the Auto data set studied in the lab. Make sure that the missing values have been removed from the data.
+
+### (a) Which of the predictors are quantitative, and which are qualitative?
+```{r}
+auto = Auto
+
+categorical = sapply(auto, is.factor) #Determine which variables are categorical
+print(paste0( "The categorical variable is: ",colnames(auto[categorical]))) #Get names of categorical variables
+
+numeric = sapply(auto, is.numeric) #Determine which variables are categorical
+print(paste0("The numeric variables are: ", colnames(auto[numeric]))) #Get names of categorical variables
 ```
 
+### (b) What is the range of each quantitative predictor? You can answer this using the range() function.
+```{r}
+sapply(auto[numeric], range) #Range of each numeric variable
+```
+
+### (c) What is the mean and standard deviation of each quantitative predictor?
+```{r}
+print("Mean of each Numeric Variable")
+sapply(auto[numeric], mean) #Mean of each numeric variable
+print("Standard Deviation of each Numeric Variable")
+sapply(auto[numeric], sd) #Standard deviation of each numeric variable
+```
+
+###(d) Now remove the 10th through 85th observations. What is the range, mean, and standard deviation of each predictor in the subset of the data that remains?
+```{r}
+auto_new = auto[-c(10,85),]
+
+print("Mean of each Numeric Variable")
+sapply(auto_new[numeric], mean) #Mean of each numeric variable
+print("Standard Deviation of each Numeric Variable")
+sapply(auto_new[numeric], sd) #Standard deviation of each numeric variable
+```
+
+###(e)
+```{r}
+pairs(auto)
+plot(auto$mpg, auto$horsepower)
+plot(auto$year, auto$mpg)
+
+auto_mcs = scale(auto[numeric])#Mean center and scale data
+boxplot(auto_mcs)
+```
+We observe that horsepower is seemingly negatively correlated with miles per gallon. The average miles per gallon a car has seems to be increasing over the time period given. Acceleration and horsepower seem to have possible outliers.
+
+### (f) Suppose that we wish to predict gas mileage (mpg) on the basis of the other variables. Do your plots suggest that any of the other variables might be useful in predicting mpg? Justify your answer.
 
 
