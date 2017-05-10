@@ -1,5 +1,5 @@
 ---
-title: "Chaper 2 Exercises"
+title: "ISLR Chaper 2 Exercises"
 author: "Jonathan Bryan"
 date: "May 7, 2017"
 output:
@@ -18,7 +18,7 @@ Flexible models can be difficult or impossible to fit when there are not enough 
 #### (C) The relationship between the predictors and response is highly non-linear.
 Many flexible models can more easily and accurately model non-linear behavior so a non-linear model may be preferred.
 
-#### (d) The variance of the error terms, i.e. $σ_2 = Var(\epsilon)$, is extremely high.
+#### (d) The variance of the error terms, i.e. $\sigma^2 = Var(\epsilon)$, is extremely high.
 Flexible models tend to "chase" or closely follow the variation found in the training set data. This leads to high variability each time the model is run on different sets of training data. Therefore, increasing the variability of the noise in the data will increase the variability in the flexible model which is sub optimal. Therefore, a more flexible model may not be preferred.
 
 ### 2. Explain whether each scenario is a classification or regression problem, and indicate whether we are most interested in inference or prediction. Finally, provide n and p.
@@ -90,14 +90,15 @@ Bias decreases as the model is better able to account for the variation in indiv
 3. A toy company would like to market a new toy to a particular high-value customer segment. They would like to to know which attributes are clustered around different market segments and then blend those attributes together to create the new toy to appeal to the new customer segment. Cluster analysis can be run on the current toys to ascertain which attributes are closely associated and then match those clusters to market segments.
 
 
-#### 8.
-###(a)
+### 8.
+#### (a) Use the read.csv() function to read the data into R. Call the loaded data college. Make sure that you have the directory set
+to the correct location for the data.
 ```{r}
 library(ISLR)
 college = College
 ```
 
-###(b)
+###(b) Look at the data using the fix() function. You should notice that the first column is just the name of each university.We don’t really want R to treat this as data. However, it may be handy to have these names for later.
 ```{r}
 fix(college)
 ```
@@ -124,8 +125,9 @@ hist(college$Top25perc)
 college_mcs = sapply(college, is.numeric)
 college_mcs = college[college_mcs]
 college_mcs = sapply(college_mcs, function(college_mcs) (college_mcs - mean(college_mcs))/sd(college_mcs))#mean centered and scaled data
-boxplot(college_mcs)
 
+par(mfrow = c(1,2))
+boxplot(college_mcs)
 plot(college$Elite, college$Apps)
 ```
 We observe that many of the numeric variables have fat tail empirical distributions that skew towards positive values. We also observe that elite institutions receive many more applications than non-elite institutions.
