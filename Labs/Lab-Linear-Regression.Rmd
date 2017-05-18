@@ -1,0 +1,88 @@
+---
+title: "Lab-Linear-Regression"
+author: "Jonathan Bryan"
+date: "May 18, 2017"
+output: pdf_document
+---
+
+3.6.1 Libraries
+```{r}
+library(MASS)
+library(ISLR)
+```
+
+3.6.2 Simple Linear Regression
+```{r}
+boston = Boston
+fix(boston)
+names(boston)
+```
+
+
+Linear regression using medv as response and lstat as predictor
+```{r}
+lm.fit = lm(medv ~ lstat, data=boston)
+lm.fit
+
+summary(lm.fit) #Run summary statistics on linear model
+names(lm.fit) #Determine the names of data stored in lm.fit
+coef(lm.fit) #Get the coefficient names and values of lm.fit
+confint(lm.fit) #Get 95% confidence intervals for the coefficients
+
+new_data = data.frame(lstat = c(5,10,15))
+predict(lm.fit, new_data, interval ="confidence")
+predict(lm.fit,new_data,interval = "prediction")
+```
+
+Graphical plots
+```{r}
+plot(boston$medv, boston$lstat)
+abline(lm.fit)
+
+#Different plots with adjusted settings
+abline(lm.fit, lwd = 3, col ="red")
+plot(boston$lstat, boston$medv, col = "red")
+plot(boston$lstat, boston$medv, pch = 20)
+plot(boston$lstat, boston$medv, pch = "+") #Using plus (+) symbol for scatter plot
+plot(1:20, 1:20, pch = 1:20) #Different possible symbols
+
+#Diagnostic plots
+par(mfrow= c(2,2))
+plot(lm.fit)
+
+plot(predict(lm.fit), residuals(lm.fit))
+plot(predict(lm.fit), rstudent(lm.fit))
+plot(hatvalues(lm.fit)) #Leverage diagnostic
+which.max(hatvalues(lm.fit)) #Index with largest hat value
+```
+
+
+3.6.3 Multiple Linear Regression
+```{r}
+#MLR with just lstat and age as predictors
+lm.fit = lm(medv ~ lstat + age, data = boston)
+summary(lm.fit)
+
+#MLR with all 13 predictors from the Boston dataset
+lm.fit = lm(medv ~ ., data = boston)
+summary(lm.fit)
+```
+
+Variance inflation factors
+```{r}
+library(car)
+vif(lm.fit)
+```
+
+Exclude age predictor
+```{r}
+#MLR excluding age
+lm.fit1 = lm(medv ~ . -age, data = boston)
+summary(lm.fit1)
+```
+
+3.6.4 Interaction Terms
+```{r}
+lm.fit_interaction = lm(medv ~ lstat*age, data = boston)
+summary(lm.fit_interaction)
+```
