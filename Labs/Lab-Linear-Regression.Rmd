@@ -64,14 +64,14 @@ lm.fit = lm(medv ~ lstat + age, data = boston)
 summary(lm.fit)
 
 #MLR with all 13 predictors from the Boston dataset
-lm.fit = lm(medv ~ ., data = boston)
-summary(lm.fit)
+lm.fit_all = lm(medv ~ ., data = boston)
+summary(lm.fit_all)
 ```
 
 Variance inflation factors
 ```{r}
 library(car)
-vif(lm.fit)
+vif(lm.fit_all)
 ```
 
 Exclude age predictor
@@ -83,6 +83,63 @@ summary(lm.fit1)
 
 3.6.4 Interaction Terms
 ```{r}
-lm.fit_interaction = lm(medv ~ lstat*age, data = boston)
+lm.fit_interaction = lm(medv ~ lstat*age, data = boston) #The * is equivalent to lstat+age+lstat:age
 summary(lm.fit_interaction)
 ```
+
+3.6.5 Non-linear Transformations of the Predictors
+```{r}
+lm.fit_non_linear = lm(medv ~ lstat + I(lstat^2), data = boston)
+summary(lm.fit_non_linear)
+```
+
+Analysis of variance
+```{r}
+lm.fit = lm(medv ~ lstat, data = boston)
+anova(lm.fit,lm.fit_non_linear)
+```
+
+Residual analysis
+```{r}
+par(mfrow=c(2,2))
+plot(lm.fit_non_linear)
+```
+
+Polynomial transformation
+```{r}
+lm.fit_polynomial = lm(medv ~ poly(lstat,5), data = boston)
+summary(lm.fit_polynomial)
+```
+
+Log transformation
+```{r}
+lm.log = lm(medv ~ log(lstat), data = boston)
+summary(lm.log)
+```
+
+3.6.6 Qualitative Predictors
+```{r}
+fix(Carseats)
+names(Carseats)
+carseats = Carseats
+```
+
+```{r}
+lm.fit_dummy = lm(Sales ~ . + Income:Advertising + Price:Age, data = Carseats)
+summary(lm.fit_dummy)
+```
+
+```{r}
+attach(Carseats)
+contrasts(ShelveLoc)
+```
+
+3.6.7 Writing Functions
+```{r}
+LoadLibraries = function(){
+  library(ISLR)
+  library(MASS)
+  print("The libraries have been loaded.")
+}
+```
+
