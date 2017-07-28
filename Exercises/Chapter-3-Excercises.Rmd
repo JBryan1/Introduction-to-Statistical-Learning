@@ -2,7 +2,65 @@
 title: "Chapter-3-Excercises"
 author: "Jonathan Bryan"
 date: "July 26, 2017"
-output: pdf_document
+output:
+  pdf_document: default
+  html_document: default
 ---
 
 ### 1.Describe the null hypotheses to which the p-values given in Table 3.4 correspond. Explain what conclusions you can draw based on these p-values. Your explanation should be phrased in terms of sales, TV, radio, and newspaper, rather than in terms of the coefficients of the linear model.
+The null hypothesis tested for the coefficients in the linear regression model asserts that there is no relationship between the predictor and the response variable, which mathematically means the coefficient is zero. At an alpha level of 0.05 we can say that both TV and radio advertising spending are significant predictors for the sales response variable. More specifically, the model says that every dollar towards TV advertising is associated with an additional \$46 in sales and every  dollar towards radio advertising is associated with \$189 dollars in sales.
+
+### 2. Carefully explain the differences between the KNN classifier and KNN regression methods
+Both KNN classifiers and regressions are non-parametric models. Both methods use a distance metric to calculate a pre-scpecified K number of data points nearest neighbors. KNN classifiers then use a voting method to predict a class based upon the labeled classes of the neighbors. KNN regressions average the numerical values of the neighbors to generate an estimate.
+
+### 3. Suppose we have a data set with five predictors, X1 = GPA, X2 = IQ, X3 = Gender (1 for Female and 0 for Male), X4 = Interaction between GPA and IQ, and X5 = Interaction between GPA and Gender. The response is starting salary after graduation (in thousands of dollars). Suppose we use least squares to fit the model, and get $\hat{\beta_0}$ = 50, $\hat{\beta_1}$ = 20, $\hat{\beta_2}$ = 0.07, $\hat{\beta_3}$ = 35, $\hat{\beta_4}$ = 0.01, $\hat{\beta_5}$ = -10.
+
+#### (a) Which answer is correct, and why?
+For a fixed value of IQ and GPA, males earn more on average than females provided that the GPA is high enough. This is because while the model estimates \$35,000 increase in salary for females, if GPA is higher than 3.5 then the GPA-Gender interaction term for females overwhelms the /$35,000 increase.
+
+#### (b) Predict the salary of a female with IQ of 110 and a GPA of 4.0.
+$50 + 20(4.0) + 0.07(110) + 35(1) + 0.01(4.0*110) -10(4.0 * 1) = \$137,100$
+
+#### (c) True or false: Since the coefficient for the GPA/IQ interaction term is very small, there is very little evidence of an interaction effect. Justify your answer
+False. "Evidence" for an interaction effect would be evaluated using some test of significance or certainty of the coeffieicent not its numerical scale. The effect may in fact be large because IQ is on a numerically larger scale compared to GPA and the binary 0 or 1 for gender. In addition, IQ is multiplied by GPA, increasing the relative scale of the interaction term.
+
+### 4. I collect a set of data (n = 100 observations) containing a single predictor and a quantitative response. I then fit a linear regression model to the data, as well as a separate cubic regression, i.e. $Y = \beta_0 + \beta_1*X + \beta_2*X^2 + \beta_3*X^3 + \epsilon$.
+
+#### (a)Suppose that the true relationship between X and Y is linear, i.e. $Y = \beta_0 + \beta_1*X + \epsilon$. Consider the training residual sum of squares (RSS) for the linear regression, and also the training RSS for the cubic regression. Would we expect one to be lower than the other, would we expect them to be the same, or is there not enough information to tell? Justify your answer.
+This would depend on the training sample and therefore there is not enough information. This is because, while the true relationship between Y and X maybe be linear, the cubic regression may fit the training sample "closer" than the linear regression, therefore giving us a lower training residual sum of squares. Alternatively, the nonlinear curves of the cubic model may overshoot or undershoot the training data.
+
+#### (b) Answer (a) using test rather than training RSS.
+The testing resdiual sum of squares would be expected to be lower for the linear model rather than than the cubic regression model. This is because the flexbility of the cubic regression model will to closely track the training data and lead to larger residuals when fit to the testing data.
+
+#### (c) Suppose that the true relationship between X and Y is not linear, but we don’t know how far it is from linear. Consider the training RSS for the linear regression, and also the training RSS for the cubic regression. Would we expect one to be lower than the other, would we expect them to be the same, or is there not enough information to tell? Justify your answer.
+There is not enough information to tell. The size of the residuals for each model will be highly dependent on how nonlinear the data is. Small deviations in linearity may not disadvantage the linear regression in comparison to the cubic regression model, however, if the relationship between the predictor and response was in fact quadratic, cubic, or higher, we would expect the cubic model to perform better.
+
+#### (d) Answer (c) using test rather than training RSS.
+This answer is similar to part (c). The outcome is highly dependent on the nonlinearity of the population data. One difference is that we would expect the performance of the cubic regression model to perform much better in comparison to the training data (lower test residual sum of squares) as nonlinearity increases.  
+
+
+### 5. 
+
+### 6.
+
+### 7.
+
+### 8. This question involves the use of simple linear regression on the Auto data set.
+
+#### (a) Use the lm() function to perform a simple linear regression with mpg as the response and horsepower as the predictor. Use the summary() function to print the results. Comment on the output.
+```{r}
+#Load data
+library(ISLR)
+auto = Auto
+```
+
+```{r}
+#Fit simple linear regression
+lm.fit = lm(mpg ~ horsepower, data = auto)
+summary(lm.fit)
+```
+##### (i) Is there a relationship between the predictor and the response?
+Given the high F-statistic of the model we can say the model itself is significant. In addition, the p-value of the  horsepower coefficient is lower than 0.01 so we can say the horsepower is a significant predictor and therefore there is a relationship between the predictor and the response.
+
+####(ii) How strong is the relationship between the predictor and the response?
+For every 1 unit increase in horsepower, there is a correspondiing 0.15 decrease in mpg. The model explaines 60 percent of the variation in mpg.
