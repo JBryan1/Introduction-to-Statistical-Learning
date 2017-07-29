@@ -62,5 +62,124 @@ summary(lm.fit)
 ##### (i) Is there a relationship between the predictor and the response?
 Given the high F-statistic of the model we can say the model itself is significant. In addition, the p-value of the  horsepower coefficient is lower than 0.01 so we can say the horsepower is a significant predictor and therefore there is a relationship between the predictor and the response.
 
-####(ii) How strong is the relationship between the predictor and the response?
-For every 1 unit increase in horsepower, there is a correspondiing 0.15 decrease in mpg. The model explaines 60 percent of the variation in mpg.
+##### (ii) How strong is the relationship between the predictor and the response?
+For every 1 unit increase in horsepower, there is a correspondiing 0.15 decrease in mpg. The model explains 60 percent of the variation in mpg.
+
+##### (iii) The horsepower coefficient is negative (-0.157) and a 99% confidence interval does not include a change of sign, therefore we can say the relationship between horsepower and mpg is negative.
+
+##### (iV) 
+```{r}
+#mpg prediction for 98 horsepower
+mpg_pred_pi = predict(lm.fit, data.frame(horsepower = c(98)), interval = "confidence")
+mpg_pred_ci = predict(lm.fit, data.frame(horsepower = c(98)), interval = "prediction")
+print(paste0("The point estimate for mpg at 98 horsepower is ",mpg_pred_pi[1], ", while the confidence interval is (", mpg_pred_ci[2], ",", mpg_pred_ci[3], ") and the prediction interval is (",mpg_pred_pi[2], ",",mpg_pred_pi[3], ")."))
+```
+
+#### (b)
+```{r}
+plot(auto$horsepower, auto$mpg)
+abline(lm.fit, col="red")
+```
+
+#### (C)
+```{r}
+par(mfrow=c(2,2))
+plot(lm.fit)
+```
+Residuals show positive bias at the lower and upper extremes of mpg, while negative near the median. This could be because the true relationship between horsepower and mpg is polynomial in nature, possibly quadratic. The Normal Q-Q plot demonstrates deviations from normality at the lower and upper extremes of the standardized residuals. Finally there are number of high leverage points but very little outliers.
+
+### 9.This question involves the use of multiple linear regression on the Auto data set.
+
+#### (a) Produce a scatterplot matrix which includes all of the variables in the data set.
+```{r}
+#Scatterplot Matrix
+pairs(auto)
+```
+
+#### (b) Compute the matrix of correlations between the variables using the function cor(). You will need to exclude the name variable, cor() which is qualitative.
+```{r}
+cor(auto[,-which(names(auto) == "name")])
+```
+
+#### (c) Use the lm() function to perform a multiple linear regression with mpg as the response and all other variables except name as the predictors. Use the summary() function to print the results.
+```{r}
+lm.fit2 = lm(mpg ~ . -name, data = auto)
+summary(lm.fit2)
+```
+
+##### (i) Is there a relationship between the predictors and the response?
+The adjusted R-squared of the moel is approximately 0.81 which means the model caputres a 81% of the variation in mpg. The F-statistic is large enough as to reject the null hypothesis that this is no relation between the predictors and the response variable.
+
+##### (ii) Which predictors appear to have a statistically significant relationship to the response?
+Displacement, weight, year, and origin are all statistically significant at an alpha level of 0.01.
+
+#### (iii) What does the coefficient for the year variable suggest?
+The coefficient for year is 0.75. This suggests that, holding all other predictors fixed, the mpg inceases by 0.75 for each additional year.
+
+###(d) Use the plot() function to produce diagnostic plots of the linear regression fit. Comment on any problems you see with the fit. Do the residual plots suggest any unusually large outliers? Does the leverage plot identify any observations with unusually high leverage?
+```{r}
+par(mfrow=c(2,2))
+plot(lm.fit2)
+```
+Positive residual outliers exist at the upper end of mpg and at the very lower end. There is a preponderance of negative residual outliers in the middle of the mpd data between 15 and 30. Two obervations are substantially above 0.02 (derived using p+1/n which is a dianostic test for high leverage observations), including observation 14 which has very high leverage.
+
+### (e) Use the * and : symbols to fit linear regression models with interaction effects. Do any interactions appear to be statistically significant?
+```{r}
+lm.fit3 = lm(mpg ~ . +cylinders:horsepower+ year:origin+weight:acceleration -name, data = auto)
+summary(lm.fit3)
+```
+The cylinders and horsepower interaction effect is significant at an alpha level of .01. Neither the year-origin or weight-accelration is significant at an alpha level of 0.05.
+
+
+### (f) Try a few different transformations of the variables, such as $log(X)$, $\sqrt{X}$, $X^2$. Comment on your findings.
+```{r}
+lm.fit4 = lm(mpg ~ (horsepower^2) + log(displacement) +sqrt(year), data = auto )
+summary(lm.fit4)
+```
+Horsepower was raised to a power of two, the log was taken of displacement, and the square root was taken of year. Each of these transformed variables was significant and the model achieve an adjusted R-squared of 0.79 which is close to the full model excluding name.
+
+## 10. This question should be answered using the Carseats data set
+```{r}
+library(car) #For diagnostics
+carseats = Carseats
+```
+
+### (a) Fit a multiple regression model to predict Sales using Price, Urban, and US.
+```{r}
+lm.car = lm(Sales ~ Price + Urban + US, data=carseats)
+```
+
+### (b) Provide an interpretation of each coefficient in the model. Be careful—some of the variables in the model are qualitative!
+```{r}
+summary(lm.car)
+```
+The model estimates each dollar increase in price results in 0.05 less unit sales. Urban sales locations produce 0.02 less sales while US locations being in an estimated 1.2 more in unit sales.
+
+#### (c) Write out the model in equation form, being careful to handle the qualitative variables properly.
+
+####(d) For which of the predictors can you reject the null hypothesis $H_0 : \beta_j = 0$?
+At an alpha level of 0.01 we can reject the null hypothesis for Price and US.
+
+#### (e) On the basis of your response to the previous question, fit a smaller model that only uses the predictors for which there is evidence of association with the outcome.
+```{r}
+lm.car2 = lm(Sales ~ Price + US, data = carseats)
+summary(lm.car2)
+```
+
+#### (f)How well do the models in (a) and (e) fit the data?
+Both models have F-statistics high enough to reject the null hypothesis that the response has no relationship with the predictors. However, both models have low, albeit nearly equal, R-squared values (approximately 0.23). Therefore both models fit the data somewhat poorly.
+
+#### (g) Using the model from (e), obtain 95 % confidence intervals for the coefficient(s).
+```{r}
+confint(lm.car2)
+```
+
+#### (f)  Is there evidence of outliers or high leverage observations in the model from (e)?
+```{r}
+outlierTest(lm.car2)
+leveragePlots(lm.car2)
+influencePlot(lm.car2)
+
+#Look at: http://www.statmethods.net/stats/rdiagnostics.html
+```
+
