@@ -176,10 +176,42 @@ confint(lm.car2)
 
 #### (f)  Is there evidence of outliers or high leverage observations in the model from (e)?
 ```{r}
+par(mfrow=c(2,2))
+plot(lm.car2)
+```
+
+```{r}
 outlierTest(lm.car2)
 leveragePlots(lm.car2)
 influencePlot(lm.car2)
-
-#Look at: http://www.statmethods.net/stats/rdiagnostics.html
 ```
+The residual plots show approximately normally distributed random residuals. Analysis of the residuals vs. leverage plot show no values with extraordinary Cook's distances. The Bonferroni-adjusted outlier test indicates no outliers, however, it shows the observation with the largest studentized residual is observation 377.
+
+### 11. In this problem we will investigate the t-statistic for the null hypothesis $H_0 : \beta = 0 in simple linear regression without an intercept. To begin, we generate a predictor x and a response y as follows:
+```{r}
+set.seed(1)
+x = rnorm(100)
+y = 2*x + rnorm(100)
+```
+
+#### (a) Perform a simple linear regression of y onto x, without an intercept. Report the coefficient estimate $\hat{\beta}$, the standard error of this coefficient estimate, and the t-statistic and p-value associated with the null hypothesis $H_0 : \beta = 0. Comment on these results. (You can perform regression without an intercept using the command lm(y ~ x+0).)
+```{r}
+fit.y_no_intercept = lm(y ~ x + 0)
+summary(fit.y_no_intercept)
+```
+??????
+
+#### (b)  Now perform a simple linear regression of x onto y without an intercept, and report the coefficient estimate, its standard error, and the corresponding t-statistic and p-values associated with the null hypothesis H_0 : \beta = 0. Comment on these results.
+```{r}
+fit.x_no_intercept = lm(x ~ y + 0)
+summary(fit.x_no_intercept)
+```
+?????
+
+#### (c) What is the relationship between the results obtained in (a) and (b)?
+
+
+#### (d) For the regression of Y onto X without an intercept, the t-statistic for $H_0 : \beta = 0$ takes the form \hat{\beta}/SE(\hat{\beta}), where $\hat{\beta}$ is given by (3.38), and where
+
+
 
