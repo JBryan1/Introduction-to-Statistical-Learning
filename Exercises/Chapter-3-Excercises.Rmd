@@ -211,7 +211,76 @@ summary(fit.x_no_intercept)
 #### (c) What is the relationship between the results obtained in (a) and (b)?
 
 
-#### (d) For the regression of Y onto X without an intercept, the t-statistic for $H_0 : \beta = 0$ takes the form \hat{\beta}/SE(\hat{\beta}), where $\hat{\beta}$ is given by (3.38), and where
+#### (d) For the regression of Y onto X without an intercept, the t-statistic for $H_0 : \beta = 0$ takes the form \hat{\beta}/SE(\hat{\beta}), where $\hat{\beta}$ is given by (3.38), and where $$SE(\hat{\beta}) = \sqrt{\frac{\sum_{i=1}^{n} (y_i - x_i\hate{\beta})^{2}}{(n-1)\sum_{i'}^{2}}}$$. (These formulas are slightly different from those given in Sections 3.1.1 and 3.1.2, since here we are performing regression without an intercept.) Show algebraically, and confirm numerically in R, that the t-statistic can be written as $$\frac{\sqrt{n-1}\sum_{i=1}^{n}x_iy_i}{\sqrt{(\sum_{i=1}^{n}x_{i}^{2})(\sum_{i'=1}^{n}y_{i`}^{2}) - (\sum_{i'=1}^{n}x_{i'}y_{i'})^{2})}}
+
+#### (f) In R, show that when regression is performed with an intercept, the t-statistic for $H_0 : \beta_1 = 0 is the same for the regression of y onto x as it is for the regression of x onto y.
+
+### 12. This problem involves simple linear regression without an intercept.
+
+#### (a) Recall that the coefficient estimate $\hat{{\beta}} for the linear regression of Y onto X without an intercept is given by (3.38). Under what circumstance is the coefficient estimate for the regression of X onto Y the same as the coefficient estimate for the regression of Y onto X?
+The coefficient will be the same When the relationship between Y and X is one-to-one and doesn't require a transformation.
+
+#### (b) Generate an example in R with n = 100 observations in which the coefficient estimate for the regression of X onto Y is different from the coefficient estimate for the regression of Y onto X.
+```{r}
+x = rnorm(100)
+y = sqrt(x+10) + rnorm(100)
+lm.x_fit_random = lm(y ~ x + 0)
+lm.y_fit_random = lm(x ~ y + 0)
+summary(lm.x_fit_random)
+summary(lm.y_fit_random)
+```
+#### (c) Generate an example in R with n = 100 observations in which the coefficient estimate for the regression of X onto Y is the same as the coefficient estimate for the regression of Y onto X.
+```{r}
+x = rnorm(100)
+y = x + rnorm(100, mean = 0, sd = 0.5)
+lm.x_fit_random = lm(y ~ x + 0)
+lm.y_fit_random = lm(x ~ y + 0)
+summary(lm.x_fit_random)
+summary(lm.y_fit_random)
+```
+????
+
+### 13. In this exercise you will create some simulated data and will fit simple linear regression models to it. Make sure to use set.seed(1) prior to starting part (a) to ensure consistent results.
+
+#### (a) Using the rnorm() function, create a vector, x, containing 100 observations drawn from a N(0, 1) distribution. This represents a feature, X.
+```{r}
+set.seed(1)
+x = rnorm(100, mean = 0, sd = 1)
+```
+
+#### (b) Using the rnorm() function, create a vector, eps, containing 100 observations drawn from a N(0, 0.25) distribution i.e. a normal distribution with mean zero and variance 0.25.
+```{r}
+eps = rnorm(100, mean = 0, sd = 0.25)
+```
+
+#### (c) Using x and eps, generate a vector y according to the model $$Y = -1 + 0.5X + \epsilon$$. What is the length of the vector y? What are the values of \beta_0 and \beta_1 in this linear model?
+```{r}
+y = -1 + 0.5*x + eps
+length(y)
+```
+The length of the y vector is 100. $\beta_0$ = -1 and $\beta_1 = 0.5$.
+
+#### (d) Create a scatterplot displaying the relationship between x and y. Comment on what you observe.
+```{r}
+plot(x,y)
+```
+We observe a positive relationship between x and y. The y-intercept is approximately -1 while one could easily draw a regression line with a slope of 0.5 through the points.
+
+#### (e) Fit a least squares linear model to predict y using x. Comment on the model obtained. How do \hat{\beta_0} and \hat{\beta_1} compare to \beta_0 and \beta_1?
+```{r}
+fit.random = lm(y ~ x)
+summary(fit.random)
+```
+The intercept is approximately -1.01 and the coefficient of x is approximately 0.499. These are very close to the original programmed values.
+
+#### (f) Display the least squares line on the scatterplot obtained in (d). Draw the population regression line on the plot, in a different color. Use the legend() command to create an appropriate legend.
+```{r}
+plot(x,y)
+abline(fit.random, col = "red")
+legend(x = "bottomright", legend = c("Regression Line"), col = "red", lty = 1)
+```
+#### (g) Now fit a polynomial regression model that predicts y using x and x2. Is there evidence that the quadratic term improves the wmodel fit? Explain your answer.
+
 
 
 
