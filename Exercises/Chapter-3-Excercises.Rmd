@@ -262,7 +262,7 @@ The length of the y vector is 100. $\beta_0$ = -1 and $\beta_1 = 0.5$.
 
 #### (d) Create a scatterplot displaying the relationship between x and y. Comment on what you observe.
 ```{r}
-plot(x,y)
+plot(x,y, main = "Scatterplot of X and Y")
 ```
 We observe a positive relationship between x and y. The y-intercept is approximately -1 while one could easily draw a regression line with a slope of 0.5 through the points.
 
@@ -275,12 +275,173 @@ The intercept is approximately -1.01 and the coefficient of x is approximately 0
 
 #### (f) Display the least squares line on the scatterplot obtained in (d). Draw the population regression line on the plot, in a different color. Use the legend() command to create an appropriate legend.
 ```{r}
-plot(x,y)
+plot(x,y, main ="Linear Regression for Y Response")
 abline(fit.random, col = "red")
 legend(x = "bottomright", legend = c("Regression Line"), col = "red", lty = 1)
 ```
-#### (g) Now fit a polynomial regression model that predicts y using x and x2. Is there evidence that the quadratic term improves the wmodel fit? Explain your answer.
+#### (g) Now fit a polynomial regression model that predicts y using x and x2. Is there evidence that the quadratic term improves the model fit? Explain your answer.
+```{r}
+lm.fit_poly = lm(y ~ poly(x,2))
+summary(lm.fit_poly)
+```
+The adjusted-R squared model is nearly the same for the linear and quadratic models. The quadratic x term is not significant at an alpha level of 0.05 does little to improve the model fit.
 
+#### (h) Repeat (a)–(f) after modifying the data generation process in such a way that there is less noise in the data. The model (3.39) should remain the same. You can do this by decreasing the variance of the normal distribution used to generate the error term in (b). Describe your results.
 
+```{r}
+set.seed(1)
+x_2 = rnorm(100, mean = 0, sd = 1)
+eps_2 = rnorm(100, mean = 0, sd = 0.125)
+y_2 = -1 + 0.5*x_2 + eps_2
+fit.random_2 = lm(y_2 ~ x_2)
+summary(fit.random_2)
+plot(x_2,y_2, main = "Linear Regression for Y Response: Less Variance")
+abline(fit.random_2, col = "red")
+legend(x = "bottomright", legend = c("Regression Line"), col = "red", lty = 1)
+```
+When the variance is of the error term is reduced to a standard deviation of 0.125 we obeserve higher values for the adjusted R-squared (93.3), F-statistic (1378), and t values for the intercept and x term. Overall the model is a better fit when there is less noise in the data.
 
+#### (i) Repeat (a)–(f) after modifying the data generation process in such a way that there is more noise in the data. The model (3.39) should remain the same. You can do this by increasing the variance of the normal distribution used to generate the error term  in (b). Describe your results.
+
+```{r}
+set.seed(1)
+x_3 = rnorm(100, mean = 0, sd = 1)
+eps_3 = rnorm(100, mean = 0, sd = 0.5)
+y_3 = -1 + 0.5*x_3 + eps_3
+fit.random_3 = lm(y_3 ~ x_3)
+summary(fit.random_3)
+plot(x_3,y_3, main = "Linear Regression for Y Response: More Variance")
+abline(fit.random_3, col = "red")
+legend(x = "bottomright", legend = c("Regression Line"), col = "red", lty = 1)
+```
+When the variance is of the error term is increased to a standard deviation of 0.5 we obeserve lower values for the adjusted R-squared (.462), F-statistic (85.99), and t values for the intercept and x term. Overall the model is a worse fit when there is more noise in the data.
+
+#### (f) What are the confidence intervals for $\beta_0$ and $\beta_1$ based on the original data set, the noisier data set, and the less noisy data set? Comment on your results.
+```{r}
+diff_1 = confint(fit.random)[1,2] - confint(fit.random)[1,1]
+diff_12 = confint(fit.random)[2,1] - confint(fit.random)[2,2]
+cbind(confint(fit.random), Difference = c(diff_1,diff_12))
+
+diff_1 = confint(fit.random_2)[1,2] - confint(fit.random_2)[1,1]
+diff_12 = confint(fit.random_2)[2,1] - confint(fit.random_2)[2,2]
+cbind(confint(fit.random_2), Difference = c(diff_1,diff_12))
+
+diff_1 = confint(fit.random_3)[1,2] - confint(fit.random_3)[1,1]
+diff_12 = confint(fit.random_3)[2,1] - confint(fit.random_3)[2,2]
+cbind(confint(fit.random_3), Difference = c(diff_1,diff_12))
+```
+The confidence intervals for the data with relatively less variance has the tightest confidence intervals for the model intercept and x term. The highest variance model confidence intervals are twice as large as the middle model and nearly four times as large as the lowest variance model.
+
+### 14. This problem focuses on the collinearity problem.
+
+#### (a) The last line corresponds to creating a linear model in which y is a function of x1 and x2. Write out the form of the linear model. What are the regression coefficients?
+```{r}
+set.seed(1)
+x1=runif (100)
+x2=0.5*x1+rnorm (100)/10
+y=2+2*x1+0.3*x2+rnorm (100)
+```
+$$y=2+2*x_1+0.3*x_2 + \epsilon$$
+The regression coefficients are $\beta_0 = 2,\; \beta_1 = 2,\; \beta_2 = 0.3$
+
+#### (b) What is the correlation between x1 and x2? Create a scatterplot displaying the relationship between the variables.
+```{r}
+plot(x1,x2, main = "Plot of X1 and X2")
+```
+X1 and X2 are positively coorelated.
+
+#### (c) Using this data, fit a least squares regression to predict y using x1 and x2. Describe the results obtained. What are $\hat{\beta_0}$, $\hat{\beta_1}$, and $\hat{\beta_2}$? How do these relate to the true $\beta_0$,\; \beta_1,\; and \beta_2$? Can you reject the null hypothesis $H_0\; :\; \beta_1 = 0$? How about the null hypothesis $H_0\; :\; \beta_2 = 0?
+```{r}
+lm.fit_cor = lm(y ~ x1 + x2)
+summary(lm.fit_cor)
+```
+The model is a moderately poor fit with a very low adjusted R-squared and uncompelling albeit significant ($\alpha = 0.05$) F-statistic. $\hat{\beta_1}$ is approximately 0.6 less than the true coefficient while $\hat{\beta_2}$ is 0.7 larger.$\hat{\beta_0}$ is only 0.13 different than the true intercept. We cannot reject either null hypothesis for the coefficients given their respectively high p-values.
+
+### (d) Now fit a least squares regression to predict y using only x1. Comment on your results. Can you reject the null hypothesis $H_0 : \beta_1 = 0?
+```{r}
+lm.fit_x1 = lm(y ~ x1)
+summary(lm.fit_x1)
+```
+This model has moderately poor fit, much like the previous model. However, the estimated coefficient (2.11) for x1 is closer to the true value (2.0) and the p-value is below an alpha level of 0.05 so we can reject the null hypothesis.
+
+(e) Now fit a least squares regression to predict y using only x2. Comment on your results. Can you reject the null hypothesis $H_0 : \beta_2 = 0?
+```{r}
+lm.fit_x2 = lm(y ~ x2)
+summary(lm.fit_x2)
+```
+This model has worse fit compared to the previous two. However, the estimated coefficient (2.89) for x2 is not close to the true value (0.3), however, the p-value is below an alpha level of 0.05 so we can reject the null hypothesis.
+
+### (f) Do the results obtained in (c)–(e) contradict each other? Explain your answer.
+Yes. Using the full model in part (c) we see that none of the coefficients are significant. However, when used as predictors in isolation, each of the predictors is deemed significant. The coefficients for each model, except for the x1 model and all estimated intercepts, are very different than the true values.
+
+### (g) Now suppose we obtain one additional observation, which was unfortunately mismeasured.Re-fit the linear models from (c) to (e) using this new data. What effect does this new observation have on the each of the models? In each model, is this observation an outlier? A high-leverage point? Both? Explain your answers
+```{r}
+x1=c(x1, 0.1)
+x2=c(x2, 0.8)
+y=c(y,6)
+```
+
+```{r}
+lm.fit_cor = lm(y ~ x1 + x2)
+summary(lm.fit_cor)
+
+lm.fit_x1 = lm(y ~ x1)
+summary(lm.fit_x1)
+
+lm.fit_x2 = lm(y ~ x2)
+summary(lm.fit_x2)
+```
+### 15. This problem involves the Boston data set, which we saw in the lab for this chapter. We will now try to predict per capita crime rate using the other variables in this data set. In other words, per capita crime rate is the response, and the other variables are the predictors.
+
+#### (a) For each predictor, fit a simple linear regression model to predict the response. Describe your results. In which of the models is there a statistically significant association between the predictor and the response? Create some plots to back up your assertions.
+```{r}
+#Load libraries
+library(MASS)
+boston = Boston
+```
+
+```{r}
+#Determine which models with individual predictors have p-values less than 0.05 and store model diagnostics
+n = length(Boston) - 1
+predictor.name = c()
+predictor.pvalue = c()
+predictor.fstat = c()
+predictor.adj.r.squared = c()
+crim = boston$crim
+for (i in 2:n){
+  modified = data.frame(crim, boston[,i])
+  colnames(modified) = c("crim", colnames(boston)[i])
+  model = lm(crim ~ ., data = modified)
+  if (summary(model)$coefficients[2,4] < 0.05){
+    predictor.name = c(predictor.name, colnames(modified)[[2]])
+    predictor.pvalue = c(predictor.pvalue, summary(model)$coefficients[2,4] )
+    predictor.fstat = c(predictor.fstat, summary(model)$fstatistic[[1]])
+    predictor.adj.r.squared = c(predictor.adj.r.squared, summary(model)$adj.r.squared)
+  }
+}
+
+table = data.frame(predictor.name,predictor.pvalue,predictor.fstat,predictor.adj.r.squared)
+table
+```
+We observe that the 11 predictors above have statistically significant relationships with per capita crime rate by town. Index of accessibility to radial highways and full-value property-tax rate per \$10,000 also have moderately high adjusted R squares, providing more evidence of their significance.
+```{r}
+plot(boston$rad, boston$crim)
+par(mfrow = c(2,2))
+lm.fit.rad = lm(crim ~ rad, data = boston)
+plot(lm.fit.rad)
+```
+
+```{r}
+plot(boston$tax, boston$crim)
+par(mfrow = c(2,2))
+lm.fit.tax = lm(crim ~ tax, data = boston)
+plot(lm.fit.tax)
+```
+
+#### (b) Fit a multiple regression model to predict the response using all of the predictors. Describe your results. For which predictors can we reject the null hypothesis $H_0\; :\; \beta_j = 0$?
+```{r}
+lm.fit.boston = lm(crim ~ ., data = boston)
+summary(lm.fit.boston)
+```
+An F-statistic of 31.47 is well above 1 so we can conlude there is some relationship between the predictors and the response. The zoning, distance to employment centers, accessibility to highways, proportion of blacks, and median home value are all significant predictors at an alpha level of 0.05.
 
