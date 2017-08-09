@@ -39,10 +39,16 @@ There is not enough information to tell. The size of the residuals for each mode
 This answer is similar to part (c). The outcome is highly dependent on the nonlinearity of the population data. One difference is that we would expect the performance of the cubic regression model to perform much better in comparison to the training data (lower test residual sum of squares) as nonlinearity increases.  
 
 
-### 5. 
+### 5. Consider the fitted values that result from performing linear regression without an intercept. In this setting, the ith fitted value takes the form $$\hat{y_i} = x_i\hat{\beta_}$$, where $$\hat{\beta} = \frac{\sum_{j = 1}^{n} x_jy_j}{\sum_{k=1}^{n}x_k^2}$$ Show that we can write $$\hat{y_i} = \sum_{j=1}^na_jy_j$$. What is $a_j$?
 
-### 6.
-
+$$\hat{y_i} = x_i(\frac{\sum_{j = 1}^{n} x_jy_j}{\sum_{k=1}^{n}x_k^2})$$
+$$\hat{y_i} = (\frac{\sum_{j = 1}^{n} x_jx_i}{\sum_{k=1}^{n}x_k^2})y_j$$
+$$a_j = (\frac{\sum_{j = 1}^{n} x_jx_i}{\sum_{k=1}^{n}x_k^2})$$
+### Using (3.4), argue that in the case of simple linear regression, the least squares line always passes through the point $(\bar{x},\bar{y})$.
+$$\beta_0 = \bar{y} - \beta_1\bar{x}$$
+$$y = \beta_0 + x_i\beta_1 $$
+$$y = \bar{y} - \bar{x}\beta_1 + x_i\beta_1$$
+$x_i = \bar{x},\; y = \bar{y} - \bar{x}\beta_1 + \bar{x}\beta_1 = \bar{y}$
 ### 7.
 
 ### 8. This question involves the use of simple linear regression on the Auto data set.
