@@ -71,7 +71,6 @@ $$Cor(X,Y)^2 = (\frac{\sum_{i=1}^n (x_i - \bar{x})(y_i - \bar{y})} {\sqrt{ \sum_
 $$Cor(X,Y)^2 = \frac{(\sum_{i=1}^n (x_i - \bar{x})(y_i - \bar{y}))^2} {\sum_{i=1}^n (x_i-\bar{x})^2 \sum_{i=1}^n (y_i-\bar{y})^2}$$
 $$Cor(X,Y)^2 = \frac{(\sum_{i=1}^n (x_i)(y_i))^2} {\sum_{i=1}^n (x_i)^2 \sum_{i=1}^n (y_i)^2}$$
 $$R^2 = \frac{\sum (x_i^2)(y_i^2)}{\sum(y_i^2)\sum(x_i^2)} = Cor(X,Y)^2 = \frac{(\sum_{i=1}^n (x_i)(y_i))^2} {\sum_{i=1}^n (x_i)^2 \sum_{i=1}^n (y_i)^2}$$
-
 ### 8. This question involves the use of simple linear regression on the Auto data set.
 
 #### (a) Use the lm() function to perform a simple linear regression with mpg as the response and horsepower as the predictor. Use the summary() function to print the results. Comment on the output.
