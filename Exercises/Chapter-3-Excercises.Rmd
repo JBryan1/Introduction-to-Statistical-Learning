@@ -49,7 +49,28 @@ $$\beta_0 = \bar{y} - \beta_1\bar{x}$$
 $$y = \beta_0 + x_i\beta_1 $$
 $$y = \bar{y} - \bar{x}\beta_1 + x_i\beta_1$$
 $x_i = \bar{x},\; y = \bar{y} - \bar{x}\beta_1 + \bar{x}\beta_1 = \bar{y}$
-### 7.
+### 7.It is claimed in the text that in the case of simple linear regression of Y onto X, the $R^2$ statistic (3.17) is equal to the square of the correlation between X and Y (3.18). Prove that this is the case. For simplicity, you may assume that $\bar{x} = \bar{y} = 0$.
+$$R^2 = \frac{TSS - RSS}{TSS} = 1 - \frac{RSS}{TSS}$$
+$$R^2 = 1 - \frac{\sum(y_i - \hat{y})^2}{\sum(y_i - \bar{y})^2}$$
+$$R^2 = 1 - \frac{\sum(y_i - \hat{y})^2}{\sum(y_i)^2}$$
+
+$$\hat{y_i} = \hat{\beta_0} + \hat{\beta_1} x_1$$
+$$\hat{y_i} = \bar{y} + \frac{\sum_{i=1}^n (x_i - \bar{x})(y_i - \bar{y})} {\sum_{i=1}^n (x_i -\bar{x})^2} \bar{x} + \frac{\sum_{i=1}^n (x_i - \bar{x})(y_i - \bar{y})} {\sum_{i=1}^n (x_i -\bar{x})^2} x_i$$
+$$\hat{y_i} = \frac{\sum_{i=1}^n (x_i - \bar{x})(y_i - \bar{y})} {\sum_{i=1}^n (x_i -\bar{x})^2} x_i$$
+$$\hat{y_i} = \frac{\sum_{i=1}^n (x_i)(y_i)} {\sum_{i=1}^n (x_i)^2} x_i$$
+$$R^2 = 1 - \frac{\sum(y_i - \frac{\sum_{i=1}^n (x_i)(y_i)} {\sum_{i=1}^n (x_i^2)} x_i)^2}{\sum(y_i)^2}$$
+$$R^2 = 1 - \frac{\sum(y_i^2 - 2*\frac{\sum_{i=1}^n (x_i)(y_i)} {\sum_{i=1}^n (x_i^2)}x_iy_i + (\frac{\sum_{i=1}^n (x_i)(y_i)} {\sum_{i=1}^n (x_i^2)})^2 x_i^2 )}{\sum(y_i^2)}$$
+$$R^2 = \frac{\sum(y_i^2) - \sum y_i^2 + \sum 2*\frac{\sum_{i=1}^n (x_i)(y_i)} {\sum_{i=1}^n (x_i^2)}x_iy_i - \sum{} (\frac{\sum_{i=1}^n (x_i)(y_i)} {\sum_{i=1}^n (x_i^2)})^2 x_i^2 )}{\sum(y_i^2)}$$
+$$R^2 = \frac{2\sum \frac{\sum_{i=1}^n (x_i)(y_i)} {\sum_{i=1}^n (x_i^2)}x_iy_i - \sum{} (\frac{\sum_{i=1}^n (x_i^2)(y_i^2) x_i^2} {\sum_{i=1}^n (x_i^4)})}{\sum(y_i^2)}$$
+$$R^2 = \frac{2\frac{\sum_{i=1}^n (x_i^2)(y_i^2)} {\sum_{i=1}^n (x_i^2)} - (\frac{\sum_{i=1}^n (x_i^2)(y_i^2)} {\sum_{i=1}^n (x_i^2)})}{\sum(y_i^2)}$$
+$$R^2 = \frac{\frac{\sum_{i=1}^n (x_i^2)(y_i^2)} {\sum_{i=1}^n (x_i^2)}}{\sum(y_i^2)}$$
+$$R^2 = \frac{\sum (x_i^2)(y_i^2)}{\sum(y_i^2)\sum(x_i^2)}$$
+
+$$Cor(X,Y) =  \frac{\sum_{i=1}^n (x_i - \bar{x})(y_i - \bar{y})} {\sqrt{ \sum_{i=1}^n (x_i-\bar{x})^2}\sqrt{ \sum_{i=1}^n (y_i-\bar{y})^2}}$$
+$$Cor(X,Y)^2 = (\frac{\sum_{i=1}^n (x_i - \bar{x})(y_i - \bar{y})} {\sqrt{ \sum_{i=1}^n (x_i-\bar{x})^2}\sqrt{ \sum_{i=1}^n (y_i-\bar{y})^2}})^2$$
+$$Cor(X,Y)^2 = \frac{(\sum_{i=1}^n (x_i - \bar{x})(y_i - \bar{y}))^2} {\sum_{i=1}^n (x_i-\bar{x})^2 \sum_{i=1}^n (y_i-\bar{y})^2}$$
+$$Cor(X,Y)^2 = \frac{(\sum_{i=1}^n (x_i)(y_i))^2} {\sum_{i=1}^n (x_i)^2 \sum_{i=1}^n (y_i)^2}$$
+$$R^2 = \frac{\sum (x_i^2)(y_i^2)}{\sum(y_i^2)\sum(x_i^2)} = Cor(X,Y)^2 = \frac{(\sum_{i=1}^n (x_i)(y_i))^2} {\sum_{i=1}^n (x_i)^2 \sum_{i=1}^n (y_i)^2}$$
 
 ### 8. This question involves the use of simple linear regression on the Auto data set.
 
