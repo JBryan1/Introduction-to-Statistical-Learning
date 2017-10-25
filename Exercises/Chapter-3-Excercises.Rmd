@@ -11,7 +11,7 @@ output:
 The null hypothesis tested for the coefficients in the linear regression model asserts that there is no relationship between the predictor and the response variable, which mathematically means the coefficient is zero. At an alpha level of 0.05 we can say that both TV and radio advertising spending are significant predictors for the sales response variable. More specifically, the model says that every dollar towards TV advertising is associated with an additional \$46 in sales and every  dollar towards radio advertising is associated with \$189 dollars in sales.
 
 ### 2. Carefully explain the differences between the KNN classifier and KNN regression methods
-Both KNN classifiers and regressions are non-parametric models. Both methods use a distance metric to calculate a pre-scpecified K number of data points nearest neighbors. KNN classifiers then use a voting method to predict a class based upon the labeled classes of the neighbors. KNN regressions average the numerical values of the neighbors to generate an estimate.
+Both KNN classifiers and regressions are non-parametric models. Both methods use a distance metric to calculate a pre-scpecified K number of data point's nearest neighbors. KNN classifiers then use a voting method to predict a class based upon the labeled classes of the neighbors. KNN regressions average the numerical values of the neighbors to generate an estimate.
 
 ### 3. Suppose we have a data set with five predictors, X1 = GPA, X2 = IQ, X3 = Gender (1 for Female and 0 for Male), X4 = Interaction between GPA and IQ, and X5 = Interaction between GPA and Gender. The response is starting salary after graduation (in thousands of dollars). Suppose we use least squares to fit the model, and get $\hat{\beta_0}$ = 50, $\hat{\beta_1}$ = 20, $\hat{\beta_2}$ = 0.07, $\hat{\beta_3}$ = 35, $\hat{\beta_4}$ = 0.01, $\hat{\beta_5}$ = -10.
 
@@ -22,9 +22,9 @@ For a fixed value of IQ and GPA, males earn more on average than females provide
 $50 + 20(4.0) + 0.07(110) + 35(1) + 0.01(4.0*110) -10(4.0 * 1) = \$137,100$
 
 #### (c) True or false: Since the coefficient for the GPA/IQ interaction term is very small, there is very little evidence of an interaction effect. Justify your answer
-False. "Evidence" for an interaction effect would be evaluated using some test of significance or certainty of the coeffieicent not its numerical scale. The effect may in fact be large because IQ is on a numerically larger scale compared to GPA and the binary 0 or 1 for gender. In addition, IQ is multiplied by GPA, increasing the relative scale of the interaction term.
+False. "Evidence" for an interaction effect would be evaluated for example by using hypothesis testing or analysis of vairance of the coeffieicent not its numerical scale. The effect may in fact be large because IQ is on a numerically larger scale compared to GPA and the binary 0 or 1 for gender. In addition, IQ is multiplied by GPA, increasing the relative scale of the interaction term.
 
-### 4. I collect a set of data (n = 100 observations) containing a single predictor and a quantitative response. I then fit a linear regression model to the data, as well as a separate cubic regression, i.e. $Y = \beta_0 + \beta_1*X + \beta_2*X^2 + \beta_3*X^3 + \epsilon$.
+### 4. I collect a set of data (n = 100 observations) containing a single predictor and a quantitative response. I then fit a linear regression model to the data, as well as a separate cubic regression, i.e. $Y = \beta_0 + \beta_1 X + \beta_2 X^2 + \beta_3 X^3 + \epsilon$.
 
 #### (a)Suppose that the true relationship between X and Y is linear, i.e. $Y = \beta_0 + \beta_1*X + \epsilon$. Consider the training residual sum of squares (RSS) for the linear regression, and also the training RSS for the cubic regression. Would we expect one to be lower than the other, would we expect them to be the same, or is there not enough information to tell? Justify your answer.
 This would depend on the training sample and therefore there is not enough information. This is because, while the true relationship between Y and X maybe be linear, the cubic regression may fit the training sample "closer" than the linear regression, therefore giving us a lower training residual sum of squares. Alternatively, the nonlinear curves of the cubic model may overshoot or undershoot the training data.
@@ -32,14 +32,22 @@ This would depend on the training sample and therefore there is not enough infor
 #### (b) Answer (a) using test rather than training RSS.
 The testing resdiual sum of squares would be expected to be lower for the linear model rather than than the cubic regression model. This is because the flexbility of the cubic regression model will to closely track the training data and lead to larger residuals when fit to the testing data.
 
-#### (c) Suppose that the true relationship between X and Y is not linear, but we don’t know how far it is from linear. Consider the training RSS for the linear regression, and also the training RSS for the cubic regression. Would we expect one to be lower than the other, would we expect them to be the same, or is there not enough information to tell? Justify your answer.
+#### (c) Suppose that the true relationship between X and Y is not linear, but we don't know how far it is from linear. Consider the training RSS for the linear regression, and also the training RSS for the cubic regression. Would we expect one to be lower than the other, would we expect them to be the same, or is there not enough information to tell? Justify your answer.
 There is not enough information to tell. The size of the residuals for each model will be highly dependent on how nonlinear the data is. Small deviations in linearity may not disadvantage the linear regression in comparison to the cubic regression model, however, if the relationship between the predictor and response was in fact quadratic, cubic, or higher, we would expect the cubic model to perform better.
 
 #### (d) Answer (c) using test rather than training RSS.
 This answer is similar to part (c). The outcome is highly dependent on the nonlinearity of the population data. One difference is that we would expect the performance of the cubic regression model to perform much better in comparison to the training data (lower test residual sum of squares) as nonlinearity increases.  
 
 
-### 5. Consider the fitted values that result from performing linear regression without an intercept. In this setting, the ith fitted value takes the form $$\hat{y_i} = x_i\hat{\beta_}$$, where $$\hat{\beta} = \frac{\sum_{j = 1}^{n} x_jy_j}{\sum_{k=1}^{n}x_k^2}$$ Show that we can write $$\hat{y_i} = \sum_{j=1}^na_jy_j$$. What is $a_j$?
+### 5. Consider the fitted values that result from performing linear regression without an intercept. In this setting, the ith fitted value takes the form 
+
+$$\hat{y_i} = x_i\hat{\beta}$$, 
+
+where $$\hat{\beta} = \frac{\sum_{j = 1}^{n} x_jy_j}{\sum_{k=1}^{n}x_k^2}$$.
+
+Show that we can write $$\hat{y_i} = \sum_{j=1}^na_jy_j$$. 
+
+What is $$a_j$$?
 
 $$\hat{y_i} = x_i(\frac{\sum_{j = 1}^{n} x_jy_j}{\sum_{k=1}^{n}x_k^2})$$
 $$\hat{y_i} = (\frac{\sum_{j = 1}^{n} x_jx_i}{\sum_{k=1}^{n}x_k^2})y_j$$
@@ -49,6 +57,7 @@ $$\beta_0 = \bar{y} - \beta_1\bar{x}$$
 $$y = \beta_0 + x_i\beta_1 $$
 $$y = \bar{y} - \bar{x}\beta_1 + x_i\beta_1$$
 $x_i = \bar{x},\; y = \bar{y} - \bar{x}\beta_1 + \bar{x}\beta_1 = \bar{y}$
+
 ### 7.It is claimed in the text that in the case of simple linear regression of Y onto X, the $R^2$ statistic (3.17) is equal to the square of the correlation between X and Y (3.18). Prove that this is the case. For simplicity, you may assume that $\bar{x} = \bar{y} = 0$.
 $$R^2 = \frac{TSS - RSS}{TSS} = 1 - \frac{RSS}{TSS}$$
 $$R^2 = 1 - \frac{\sum(y_i - \hat{y})^2}{\sum(y_i - \bar{y})^2}$$
@@ -71,6 +80,7 @@ $$Cor(X,Y)^2 = (\frac{\sum_{i=1}^n (x_i - \bar{x})(y_i - \bar{y})} {\sqrt{ \sum_
 $$Cor(X,Y)^2 = \frac{(\sum_{i=1}^n (x_i - \bar{x})(y_i - \bar{y}))^2} {\sum_{i=1}^n (x_i-\bar{x})^2 \sum_{i=1}^n (y_i-\bar{y})^2}$$
 $$Cor(X,Y)^2 = \frac{(\sum_{i=1}^n (x_i)(y_i))^2} {\sum_{i=1}^n (x_i)^2 \sum_{i=1}^n (y_i)^2}$$
 $$R^2 = \frac{\sum (x_i^2)(y_i^2)}{\sum(y_i^2)\sum(x_i^2)} = Cor(X,Y)^2 = \frac{(\sum_{i=1}^n (x_i)(y_i))^2} {\sum_{i=1}^n (x_i)^2 \sum_{i=1}^n (y_i)^2}$$
+
 ### 8. This question involves the use of simple linear regression on the Auto data set.
 
 #### (a) Use the lm() function to perform a simple linear regression with mpg as the response and horsepower as the predictor. Use the summary() function to print the results. Comment on the output.
@@ -175,7 +185,7 @@ carseats = Carseats
 lm.car = lm(Sales ~ Price + Urban + US, data=carseats)
 ```
 
-### (b) Provide an interpretation of each coefficient in the model. Be careful—some of the variables in the model are qualitative!
+### (b) Provide an interpretation of each coefficient in the model. Be careful - some of the variables in the model are qualitative!
 ```{r}
 summary(lm.car)
 ```
@@ -213,21 +223,21 @@ influencePlot(lm.car2)
 ```
 The residual plots show approximately normally distributed random residuals. Analysis of the residuals vs. leverage plot show no values with extraordinary Cook's distances. The Bonferroni-adjusted outlier test indicates no outliers, however, it shows the observation with the largest studentized residual is observation 377.
 
-### 11. In this problem we will investigate the t-statistic for the null hypothesis $H_0 : \beta = 0 in simple linear regression without an intercept. To begin, we generate a predictor x and a response y as follows:
+### 11. In this problem we will investigate the t-statistic for the null hypothesis $H_0 : \beta = 0$ in simple linear regression without an intercept. To begin, we generate a predictor x and a response y as follows:
 ```{r}
 set.seed(1)
 x = rnorm(100)
 y = 2*x + rnorm(100)
 ```
 
-#### (a) Perform a simple linear regression of y onto x, without an intercept. Report the coefficient estimate $\hat{\beta}$, the standard error of this coefficient estimate, and the t-statistic and p-value associated with the null hypothesis $H_0 : \beta = 0. Comment on these results. (You can perform regression without an intercept using the command lm(y ~ x+0).)
+#### (a) Perform a simple linear regression of y onto x, without an intercept. Report the coefficient estimate $\hat{\beta}$, the standard error of this coefficient estimate, and the t-statistic and p-value associated with the null hypothesis $H_0 : \beta = 0$. Comment on these results. (You can perform regression without an intercept using the command lm(y ~ x+0).)
 ```{r}
 fit.y_no_intercept = lm(y ~ x + 0)
 summary(fit.y_no_intercept)
 ```
 ??????
 
-#### (b)  Now perform a simple linear regression of x onto y without an intercept, and report the coefficient estimate, its standard error, and the corresponding t-statistic and p-values associated with the null hypothesis H_0 : \beta = 0. Comment on these results.
+#### (b)  Now perform a simple linear regression of x onto y without an intercept, and report the coefficient estimate, its standard error, and the corresponding t-statistic and p-values associated with the null hypothesis $H_0 : \beta = 0$. Comment on these results.
 ```{r}
 fit.x_no_intercept = lm(x ~ y + 0)
 summary(fit.x_no_intercept)
@@ -237,13 +247,13 @@ summary(fit.x_no_intercept)
 #### (c) What is the relationship between the results obtained in (a) and (b)?
 
 
-#### (d) For the regression of Y onto X without an intercept, the t-statistic for $H_0 : \beta = 0$ takes the form \hat{\beta}/SE(\hat{\beta}), where $\hat{\beta}$ is given by (3.38), and where $$SE(\hat{\beta}) = \sqrt{\frac{\sum_{i=1}^{n} (y_i - x_i\hate{\beta})^{2}}{(n-1)\sum_{i'}^{2}}}$$. (These formulas are slightly different from those given in Sections 3.1.1 and 3.1.2, since here we are performing regression without an intercept.) Show algebraically, and confirm numerically in R, that the t-statistic can be written as $$\frac{\sqrt{n-1}\sum_{i=1}^{n}x_iy_i}{\sqrt{(\sum_{i=1}^{n}x_{i}^{2})(\sum_{i'=1}^{n}y_{i`}^{2}) - (\sum_{i'=1}^{n}x_{i'}y_{i'})^{2})}}
+#### (d) For the regression of Y onto X without an intercept, the t-statistic for $H_0 : \beta = 0$ takes the form $\hat{\beta}/SE(\hat{\beta})$, where $\hat{\beta}$ is given by (3.38), and where $$SE(\hat{\beta}) = \sqrt{\frac{\sum_{i=1}^{n} (y_i - x_i\hat{\beta})^{2}}{(n-1)\sum_{i'}^{2}}}$$. (These formulas are slightly different from those given in Sections 3.1.1 and 3.1.2, since here we are performing regression without an intercept.) Show algebraically, and confirm numerically in R, that the t-statistic can be written as $$\frac{\sqrt{n-1}\sum_{i=1}^{n}x_iy_i}{\sqrt{(\sum_{i=1}^{n}x_{i}^{2})(\sum_{i'=1}^{n}y_{i`}^{2}) - (\sum_{i'=1}^{n}x_{i'}y_{i'})^{2})}}$$
 
-#### (f) In R, show that when regression is performed with an intercept, the t-statistic for $H_0 : \beta_1 = 0 is the same for the regression of y onto x as it is for the regression of x onto y.
+#### (f) In R, show that when regression is performed with an intercept, the t-statistic for $H_0 : \beta_1 = 0$ is the same for the regression of y onto x as it is for the regression of x onto y.
 
 ### 12. This problem involves simple linear regression without an intercept.
 
-#### (a) Recall that the coefficient estimate $\hat{{\beta}} for the linear regression of Y onto X without an intercept is given by (3.38). Under what circumstance is the coefficient estimate for the regression of X onto Y the same as the coefficient estimate for the regression of Y onto X?
+#### (a) Recall that the coefficient estimate $\hat{{\beta}}$ for the linear regression of Y onto X without an intercept is given by (3.38). Under what circumstance is the coefficient estimate for the regression of X onto Y the same as the coefficient estimate for the regression of Y onto X?
 The coefficient will be the same When the relationship between Y and X is one-to-one and doesn't require a transformation.
 
 #### (b) Generate an example in R with n = 100 observations in which the coefficient estimate for the regression of X onto Y is different from the coefficient estimate for the regression of Y onto X.
@@ -279,7 +289,7 @@ x = rnorm(100, mean = 0, sd = 1)
 eps = rnorm(100, mean = 0, sd = 0.25)
 ```
 
-#### (c) Using x and eps, generate a vector y according to the model $$Y = -1 + 0.5X + \epsilon$$. What is the length of the vector y? What are the values of \beta_0 and \beta_1 in this linear model?
+#### (c) Using x and eps, generate a vector y according to the model $Y = -1 + 0.5X + \epsilon$. What is the length of the vector y? What are the values of $\beta_0$ and $\beta_1$ in this linear model?
 ```{r}
 y = -1 + 0.5*x + eps
 length(y)
@@ -292,7 +302,7 @@ plot(x,y, main = "Scatterplot of X and Y")
 ```
 We observe a positive relationship between x and y. The y-intercept is approximately -1 while one could easily draw a regression line with a slope of 0.5 through the points.
 
-#### (e) Fit a least squares linear model to predict y using x. Comment on the model obtained. How do \hat{\beta_0} and \hat{\beta_1} compare to \beta_0 and \beta_1?
+#### (e) Fit a least squares linear model to predict y using x. Comment on the model obtained. How do $\hat{\beta_0}$ and $\hat{\beta_1}$ compare to $\beta_0$ and $\beta_1$?
 ```{r}
 fit.random = lm(y ~ x)
 summary(fit.random)
@@ -305,14 +315,14 @@ plot(x,y, main ="Linear Regression for Y Response")
 abline(fit.random, col = "red")
 legend(x = "bottomright", legend = c("Regression Line"), col = "red", lty = 1)
 ```
-#### (g) Now fit a polynomial regression model that predicts y using x and x2. Is there evidence that the quadratic term improves the model fit? Explain your answer.
+#### (g) Now fit a polynomial regression model that predicts $y$ using $x$ and $x^2$. Is there evidence that the quadratic term improves the model fit? Explain your answer.
 ```{r}
 lm.fit_poly = lm(y ~ poly(x,2))
 summary(lm.fit_poly)
 ```
 The adjusted-R squared model is nearly the same for the linear and quadratic models. The quadratic x term is not significant at an alpha level of 0.05 does little to improve the model fit.
 
-#### (h) Repeat (a)–(f) after modifying the data generation process in such a way that there is less noise in the data. The model (3.39) should remain the same. You can do this by decreasing the variance of the normal distribution used to generate the error term in (b). Describe your results.
+#### (h) Repeat (a)-(f) after modifying the data generation process in such a way that there is less noise in the data. The model (3.39) should remain the same. You can do this by decreasing the variance of the normal distribution used to generate the error term in (b). Describe your results.
 
 ```{r}
 set.seed(1)
@@ -327,7 +337,7 @@ legend(x = "bottomright", legend = c("Regression Line"), col = "red", lty = 1)
 ```
 When the variance is of the error term is reduced to a standard deviation of 0.125 we obeserve higher values for the adjusted R-squared (93.3), F-statistic (1378), and t values for the intercept and x term. Overall the model is a better fit when there is less noise in the data.
 
-#### (i) Repeat (a)–(f) after modifying the data generation process in such a way that there is more noise in the data. The model (3.39) should remain the same. You can do this by increasing the variance of the normal distribution used to generate the error term  in (b). Describe your results.
+#### (i) Repeat (a)-(f) after modifying the data generation process in such a way that there is more noise in the data. The model (3.39) should remain the same. You can do this by increasing the variance of the normal distribution used to generate the error term  in (b). Describe your results.
 
 ```{r}
 set.seed(1)
@@ -376,28 +386,28 @@ plot(x1,x2, main = "Plot of X1 and X2")
 ```
 X1 and X2 are positively coorelated.
 
-#### (c) Using this data, fit a least squares regression to predict y using x1 and x2. Describe the results obtained. What are $\hat{\beta_0}$, $\hat{\beta_1}$, and $\hat{\beta_2}$? How do these relate to the true $\beta_0$,\; \beta_1,\; and \beta_2$? Can you reject the null hypothesis $H_0\; :\; \beta_1 = 0$? How about the null hypothesis $H_0\; :\; \beta_2 = 0?
+#### (c) Using this data, fit a least squares regression to predict y using x1 and x2. Describe the results obtained. What are $\hat{\beta_0}$, $\hat{\beta_1}$, and $\hat{\beta_2}$? How do these relate to the true $\beta_0,\; \beta_1,\; and\; \beta_2$? Can you reject the null hypothesis $H_0\; :\; \beta_1 = 0$? How about the null hypothesis $H_0\; :\; \beta_2 = 0$?
 ```{r}
 lm.fit_cor = lm(y ~ x1 + x2)
 summary(lm.fit_cor)
 ```
 The model is a moderately poor fit with a very low adjusted R-squared and uncompelling albeit significant ($\alpha = 0.05$) F-statistic. $\hat{\beta_1}$ is approximately 0.6 less than the true coefficient while $\hat{\beta_2}$ is 0.7 larger.$\hat{\beta_0}$ is only 0.13 different than the true intercept. We cannot reject either null hypothesis for the coefficients given their respectively high p-values.
 
-### (d) Now fit a least squares regression to predict y using only x1. Comment on your results. Can you reject the null hypothesis $H_0 : \beta_1 = 0?
+### (d) Now fit a least squares regression to predict y using only x1. Comment on your results. Can you reject the null hypothesis $H_0 : \beta_1 = 0$?
 ```{r}
 lm.fit_x1 = lm(y ~ x1)
 summary(lm.fit_x1)
 ```
 This model has moderately poor fit, much like the previous model. However, the estimated coefficient (2.11) for x1 is closer to the true value (2.0) and the p-value is below an alpha level of 0.05 so we can reject the null hypothesis.
 
-(e) Now fit a least squares regression to predict y using only x2. Comment on your results. Can you reject the null hypothesis $H_0 : \beta_2 = 0?
+### (e) Now fit a least squares regression to predict y using only x2. Comment on your results. Can you reject the null hypothesis $H_0\; :\; \beta_2 = 0$?
 ```{r}
 lm.fit_x2 = lm(y ~ x2)
 summary(lm.fit_x2)
 ```
 This model has worse fit compared to the previous two. However, the estimated coefficient (2.89) for x2 is not close to the true value (0.3), however, the p-value is below an alpha level of 0.05 so we can reject the null hypothesis.
 
-### (f) Do the results obtained in (c)–(e) contradict each other? Explain your answer.
+### (f) Do the results obtained in (c)-(e) contradict each other? Explain your answer.
 Yes. Using the full model in part (c) we see that none of the coefficients are significant. However, when used as predictors in isolation, each of the predictors is deemed significant. The coefficients for each model, except for the x1 model and all estimated intercepts, are very different than the true values.
 
 ### (g) Now suppose we obtain one additional observation, which was unfortunately mismeasured.Re-fit the linear models from (c) to (e) using this new data. What effect does this new observation have on the each of the models? In each model, is this observation an outlier? A high-leverage point? Both? Explain your answers
