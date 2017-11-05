@@ -16,7 +16,7 @@ Both KNN classifiers and regressions are non-parametric models. Both methods use
 ### 3. Suppose we have a data set with five predictors, X1 = GPA, X2 = IQ, X3 = Gender (1 for Female and 0 for Male), X4 = Interaction between GPA and IQ, and X5 = Interaction between GPA and Gender. The response is starting salary after graduation (in thousands of dollars). Suppose we use least squares to fit the model, and get $\hat{\beta_0}$ = 50, $\hat{\beta_1}$ = 20, $\hat{\beta_2}$ = 0.07, $\hat{\beta_3}$ = 35, $\hat{\beta_4}$ = 0.01, $\hat{\beta_5}$ = -10.
 
 #### (a) Which answer is correct, and why?
-For a fixed value of IQ and GPA, males earn more on average than females provided that the GPA is high enough. This is because while the model estimates \$35,000 increase in salary for females, if GPA is higher than 3.5 then the GPA-Gender interaction term for females overwhelms the /$35,000 increase.
+For a fixed value of IQ and GPA, males earn more on average than females provided that the GPA is high enough. This is because while the model estimates \$35,000 increase in salary for females, if GPA is higher than 3.5 then the GPA-Gender interaction term for females overwhelms the $35,000 increase. (iii) is correct.
 
 #### (b) Predict the salary of a female with IQ of 110 and a GPA of 4.0.
 $50 + 20(4.0) + 0.07(110) + 35(1) + 0.01(4.0*110) -10(4.0 * 1) = \$137,100$
@@ -26,7 +26,7 @@ False. "Evidence" for an interaction effect would be evaluated for example by us
 
 ### 4. I collect a set of data (n = 100 observations) containing a single predictor and a quantitative response. I then fit a linear regression model to the data, as well as a separate cubic regression, i.e. $Y = \beta_0 + \beta_1 X + \beta_2 X^2 + \beta_3 X^3 + \epsilon$.
 
-#### (a)Suppose that the true relationship between X and Y is linear, i.e. $Y = \beta_0 + \beta_1*X + \epsilon$. Consider the training residual sum of squares (RSS) for the linear regression, and also the training RSS for the cubic regression. Would we expect one to be lower than the other, would we expect them to be the same, or is there not enough information to tell? Justify your answer.
+#### (a)Suppose that the true relationship between X and Y is linear, i.e. $Y = \beta_0 + \beta_1 X + \epsilon$. Consider the training residual sum of squares (RSS) for the linear regression, and also the training RSS for the cubic regression. Would we expect one to be lower than the other, would we expect them to be the same, or is there not enough information to tell? Justify your answer.
 This would depend on the training sample and therefore there is not enough information. This is because, while the true relationship between Y and X maybe be linear, the cubic regression may fit the training sample "closer" than the linear regression, therefore giving us a lower training residual sum of squares. Alternatively, the nonlinear curves of the cubic model may overshoot or undershoot the training data.
 
 #### (b) Answer (a) using test rather than training RSS.
@@ -47,39 +47,38 @@ where $$\hat{\beta} = \frac{\sum_{j = 1}^{n} x_jy_j}{\sum_{k=1}^{n}x_k^2}$$.
 
 Show that we can write $$\hat{y_i} = \sum_{j=1}^na_jy_j$$. 
 
-What is $$a_j$$?
+What is $a_j$?
 
 $$\hat{y_i} = x_i(\frac{\sum_{j = 1}^{n} x_jy_j}{\sum_{k=1}^{n}x_k^2})$$
-$$\hat{y_i} = (\frac{\sum_{j = 1}^{n} x_jx_i}{\sum_{k=1}^{n}x_k^2})y_j$$
+$$\hat{y_i} = \sum_{j = 1}^{n}(\frac{ x_jx_i}{\sum_{k=1}^{n}x_k^2})y_j$$
 $$a_j = (\frac{\sum_{j = 1}^{n} x_jx_i}{\sum_{k=1}^{n}x_k^2})$$
-### Using (3.4), argue that in the case of simple linear regression, the least squares line always passes through the point $(\bar{x},\bar{y})$.
+### 6. Using (3.4), argue that in the case of simple linear regression, the least squares line always passes through the point $(\bar{x},\bar{y})$.
 $$\beta_0 = \bar{y} - \beta_1\bar{x}$$
 $$y = \beta_0 + x_i\beta_1 $$
 $$y = \bar{y} - \bar{x}\beta_1 + x_i\beta_1$$
-$x_i = \bar{x},\; y = \bar{y} - \bar{x}\beta_1 + \bar{x}\beta_1 = \bar{y}$
+$$x_i = \bar{x},\; y = \bar{y} - \bar{x}\beta_1 + \bar{x}\beta_1 = \bar{y}$$
 
 ### 7.It is claimed in the text that in the case of simple linear regression of Y onto X, the $R^2$ statistic (3.17) is equal to the square of the correlation between X and Y (3.18). Prove that this is the case. For simplicity, you may assume that $\bar{x} = \bar{y} = 0$.
-$$R^2 = \frac{TSS - RSS}{TSS} = 1 - \frac{RSS}{TSS}$$
-$$R^2 = 1 - \frac{\sum(y_i - \hat{y})^2}{\sum(y_i - \bar{y})^2}$$
-$$R^2 = 1 - \frac{\sum(y_i - \hat{y})^2}{\sum(y_i)^2}$$
-
-$$\hat{y_i} = \hat{\beta_0} + \hat{\beta_1} x_1$$
-$$\hat{y_i} = \bar{y} + \frac{\sum_{i=1}^n (x_i - \bar{x})(y_i - \bar{y})} {\sum_{i=1}^n (x_i -\bar{x})^2} \bar{x} + \frac{\sum_{i=1}^n (x_i - \bar{x})(y_i - \bar{y})} {\sum_{i=1}^n (x_i -\bar{x})^2} x_i$$
-$$\hat{y_i} = \frac{\sum_{i=1}^n (x_i - \bar{x})(y_i - \bar{y})} {\sum_{i=1}^n (x_i -\bar{x})^2} x_i$$
-$$\hat{y_i} = \frac{\sum_{i=1}^n (x_i)(y_i)} {\sum_{i=1}^n (x_i)^2} x_i$$
-$$R^2 = 1 - \frac{\sum(y_i - \frac{\sum_{i=1}^n (x_i)(y_i)} {\sum_{i=1}^n (x_i^2)} x_i)^2}{\sum(y_i)^2}$$
-$$R^2 = 1 - \frac{\sum(y_i^2 - 2*\frac{\sum_{i=1}^n (x_i)(y_i)} {\sum_{i=1}^n (x_i^2)}x_iy_i + (\frac{\sum_{i=1}^n (x_i)(y_i)} {\sum_{i=1}^n (x_i^2)})^2 x_i^2 )}{\sum(y_i^2)}$$
-$$R^2 = \frac{\sum(y_i^2) - \sum y_i^2 + \sum 2*\frac{\sum_{i=1}^n (x_i)(y_i)} {\sum_{i=1}^n (x_i^2)}x_iy_i - \sum{} (\frac{\sum_{i=1}^n (x_i)(y_i)} {\sum_{i=1}^n (x_i^2)})^2 x_i^2 )}{\sum(y_i^2)}$$
-$$R^2 = \frac{2\sum \frac{\sum_{i=1}^n (x_i)(y_i)} {\sum_{i=1}^n (x_i^2)}x_iy_i - \sum{} (\frac{\sum_{i=1}^n (x_i^2)(y_i^2) x_i^2} {\sum_{i=1}^n (x_i^4)})}{\sum(y_i^2)}$$
-$$R^2 = \frac{2\frac{\sum_{i=1}^n (x_i^2)(y_i^2)} {\sum_{i=1}^n (x_i^2)} - (\frac{\sum_{i=1}^n (x_i^2)(y_i^2)} {\sum_{i=1}^n (x_i^2)})}{\sum(y_i^2)}$$
-$$R^2 = \frac{\frac{\sum_{i=1}^n (x_i^2)(y_i^2)} {\sum_{i=1}^n (x_i^2)}}{\sum(y_i^2)}$$
-$$R^2 = \frac{\sum (x_i^2)(y_i^2)}{\sum(y_i^2)\sum(x_i^2)}$$
-
-$$Cor(X,Y) =  \frac{\sum_{i=1}^n (x_i - \bar{x})(y_i - \bar{y})} {\sqrt{ \sum_{i=1}^n (x_i-\bar{x})^2}\sqrt{ \sum_{i=1}^n (y_i-\bar{y})^2}}$$
-$$Cor(X,Y)^2 = (\frac{\sum_{i=1}^n (x_i - \bar{x})(y_i - \bar{y})} {\sqrt{ \sum_{i=1}^n (x_i-\bar{x})^2}\sqrt{ \sum_{i=1}^n (y_i-\bar{y})^2}})^2$$
-$$Cor(X,Y)^2 = \frac{(\sum_{i=1}^n (x_i - \bar{x})(y_i - \bar{y}))^2} {\sum_{i=1}^n (x_i-\bar{x})^2 \sum_{i=1}^n (y_i-\bar{y})^2}$$
-$$Cor(X,Y)^2 = \frac{(\sum_{i=1}^n (x_i)(y_i))^2} {\sum_{i=1}^n (x_i)^2 \sum_{i=1}^n (y_i)^2}$$
-$$R^2 = \frac{\sum (x_i^2)(y_i^2)}{\sum(y_i^2)\sum(x_i^2)} = Cor(X,Y)^2 = \frac{(\sum_{i=1}^n (x_i)(y_i))^2} {\sum_{i=1}^n (x_i)^2 \sum_{i=1}^n (y_i)^2}$$
+$\begin{aligned}
+&R^2 = \frac{TSS - RSS}{TSS} = 1 - \frac{RSS}{TSS}\\
+&R^2 = 1 - \frac{\sum(y_i - \hat{y})^2}{\sum(y_i - \bar{y})^2}\\
+&R^2 = 1 - \frac{\sum(y_i - \hat{y})^2}{\sum(y_i)^2}\\
+&\hat{y_i} = \hat{\beta_0} + \hat{\beta_1} x_1\\
+&\hat{y_i} = \bar{y} + \frac{\sum_{i=1}^n (x_i - \bar{x})(y_i - \bar{y})} {\sum_{i=1}^n (x_i -\bar{x})^2} \bar{x} + \frac{\sum_{i=1}^n (x_i - \bar{x})(y_i - \bar{y})} {\sum_{i=1}^n (x_i -\bar{x})^2} x_i\\
+&\hat{y_i} = \frac{\sum_{i=1}^n (x_i - \bar{x})(y_i - \bar{y})} {\sum_{i=1}^n (x_i -\bar{x})^2} x_i\\
+&\hat{y_i} = \frac{\sum_{i=1}^n (x_i)(y_i)} {\sum_{i=1}^n (x_i)^2} x_i\\
+&R^2 = 1 - \frac{\sum(y_i - \frac{\sum_{i=1}^n (x_i)(y_i)} {\sum_{i=1}^n (x_i^2)} x_i)^2}{\sum(y_i)^2}\\
+&R^2 = 1 - \frac{\sum(y_i^2 - 2*\frac{\sum_{i=1}^n (x_i)(y_i)} {\sum_{i=1}^n (x_i^2)}x_iy_i + (\frac{\sum_{i=1}^n (x_i)(y_i)} {\sum_{i=1}^n (x_i^2)})^2 x_i^2 )}{\sum(y_i^2)}\\
+&R^2 = \frac{\sum(y_i^2) - \sum y_i^2 + \sum 2*\frac{\sum_{i=1}^n (x_i)(y_i)} {\sum_{i=1}^n (x_i^2)}x_iy_i - \sum{} (\frac{\sum_{i=1}^n (x_i)(y_i)} {\sum_{i=1}^n (x_i^2)})^2 x_i^2 )}{\sum(y_i^2)}\\
+&R^2 = \frac{2\sum \frac{\sum_{i=1}^n (x_i)(y_i)} {\sum_{i=1}^n (x_i^2)}x_iy_i - \sum{} (\frac{\sum_{i=1}^n (x_i^2)(y_i^2) x_i^2} {\sum_{i=1}^n (x_i^4)})}{\sum(y_i^2)}\\
+&R^2 = \frac{2\frac{\sum_{i=1}^n (x_i^2)(y_i^2)} {\sum_{i=1}^n (x_i^2)} - (\frac{\sum_{i=1}^n (x_i^2)(y_i^2)} {\sum_{i=1}^n (x_i^2)})}{\sum(y_i^2)}\\
+&R^2 = \frac{\frac{\sum_{i=1}^n (x_i^2)(y_i^2)} {\sum_{i=1}^n (x_i^2)}}{\sum(y_i^2)}\\
+&R^2 = \frac{\sum (x_i^2)(y_i^2)}{\sum(y_i^2)\sum(x_i^2)}\\
+&Cor(X,Y) =  \frac{\sum_{i=1}^n (x_i - \bar{x})(y_i - \bar{y})} {\sqrt{ \sum_{i=1}^n (x_i-\bar{x})^2}\sqrt{ \sum_{i=1}^n (y_i-\bar{y})^2}}\\
+&Cor(X,Y)^2 = (\frac{\sum_{i=1}^n (x_i - \bar{x})(y_i - \bar{y})} {\sqrt{ \sum_{i=1}^n (x_i-\bar{x})^2}\sqrt{ \sum_{i=1}^n (y_i-\bar{y})^2}})^2\\
+&Cor(X,Y)^2 = \frac{(\sum_{i=1}^n (x_i - \bar{x})(y_i - \bar{y}))^2} {\sum_{i=1}^n (x_i-\bar{x})^2 \sum_{i=1}^n (y_i-\bar{y})^2}\\
+&Cor(X,Y)^2 = \frac{(\sum_{i=1}^n (x_i)(y_i))^2} {\sum_{i=1}^n (x_i)^2 \sum_{i=1}^n (y_i)^2}\\
+&R^2 = \frac{\sum (x_i^2)(y_i^2)}{\sum(y_i^2)\sum(x_i^2)} = Cor(X,Y)^2 = \frac{(\sum_{i=1}^n (x_i)(y_i))^2} {\sum_{i=1}^n (x_i)^2 \sum_{i=1}^n (y_i)^2}\\
 
 ### 8. This question involves the use of simple linear regression on the Auto data set.
 
@@ -96,14 +95,15 @@ lm.fit = lm(mpg ~ horsepower, data = auto)
 summary(lm.fit)
 ```
 ##### (i) Is there a relationship between the predictor and the response?
-Given the high F-statistic of the model we can say the model itself is significant. In addition, the p-value of the  horsepower coefficient is lower than 0.01 so we can say the horsepower is a significant predictor and therefore there is a relationship between the predictor and the response.
+Given the high F-statistic of the model we can say the model itself and thus the sole predictor is significant. In addition, the p-value of the  horsepower coefficient is lower than 0.01 so we can say the horsepower is a significant predictor and therefore there is a relationship between the predictor and the response.
 
 ##### (ii) How strong is the relationship between the predictor and the response?
 For every 1 unit increase in horsepower, there is a correspondiing 0.15 decrease in mpg. The model explains 60 percent of the variation in mpg.
 
-##### (iii) The horsepower coefficient is negative (-0.157) and a 99% confidence interval does not include a change of sign, therefore we can say the relationship between horsepower and mpg is negative.
+##### (iii) Is the relationship between the predictor and the response positive or negative?
+The horsepower coefficient is negative (-0.157) and a 99% confidence interval does not include a change of sign, therefore we can say the relationship between horsepower and mpg is negative.
 
-##### (iV) 
+##### (iv) What is the predicted mpg associated with a horsepower of 98? What are the associated 95% confidence and prediction intervals?
 ```{r}
 #mpg prediction for 98 horsepower
 mpg_pred_pi = predict(lm.fit, data.frame(horsepower = c(98)), interval = "confidence")
@@ -144,7 +144,7 @@ summary(lm.fit2)
 ```
 
 ##### (i) Is there a relationship between the predictors and the response?
-The adjusted R-squared of the moel is approximately 0.81 which means the model caputres a 81% of the variation in mpg. The F-statistic is large enough as to reject the null hypothesis that this is no relation between the predictors and the response variable.
+The adjusted R-squared of the model is approximately 0.81 which means the model caputres a 81% of the variation in mpg. The F-statistic is large enough as to reject the null hypothesis that there is no relation between the predictors and the response variable.
 
 ##### (ii) Which predictors appear to have a statistically significant relationship to the response?
 Displacement, weight, year, and origin are all statistically significant at an alpha level of 0.01.
@@ -157,7 +157,7 @@ The coefficient for year is 0.75. This suggests that, holding all other predicto
 par(mfrow=c(2,2))
 plot(lm.fit2)
 ```
-Positive residual outliers exist at the upper end of mpg and at the very lower end. There is a preponderance of negative residual outliers in the middle of the mpd data between 15 and 30. Two obervations are substantially above 0.02 (derived using p+1/n which is a dianostic test for high leverage observations), including observation 14 which has very high leverage.
+Positive residual outliers exist at the upper end of mpg and at the very lower end. There is a preponderance of negative residual outliers in the middle of the mpd data between 15 and 30. Two obervations have leverage substantially above 0.02 (derived using p+1/n which is a dianostic test for high leverage observations), including observation 14 which has very high leverage.
 
 ### (e) Use the * and : symbols to fit linear regression models with interaction effects. Do any interactions appear to be statistically significant?
 ```{r}
@@ -189,9 +189,10 @@ lm.car = lm(Sales ~ Price + Urban + US, data=carseats)
 ```{r}
 summary(lm.car)
 ```
-The model estimates each dollar increase in price results in 0.05 less unit sales. Urban sales locations produce 0.02 less sales while US locations being in an estimated 1.2 more in unit sales.
+The model estimates each dollar increase in price results in 0.05 less unit sales, holding all other covariates constant. Urban sales locations produce 0.02 less sales while US locations being in an estimated 1.2 more in unit sales, again holding all other variables constant respectively.
 
 #### (c) Write out the model in equation form, being careful to handle the qualitative variables properly.
+$Sales = 13.043 + (-0.054)*Price + (-0.022)UrbanYes + (1.2)USYes + \epsilon$ 
 
 ####(d) For which of the predictors can you reject the null hypothesis $H_0 : \beta_j = 0$?
 At an alpha level of 0.01 we can reject the null hypothesis for Price and US.
@@ -221,7 +222,7 @@ outlierTest(lm.car2)
 leveragePlots(lm.car2)
 influencePlot(lm.car2)
 ```
-The residual plots show approximately normally distributed random residuals. Analysis of the residuals vs. leverage plot show no values with extraordinary Cook's distances. The Bonferroni-adjusted outlier test indicates no outliers, however, it shows the observation with the largest studentized residual is observation 377.
+The residual plots show approximately normally distributed residuals. Analysis of the residuals vs. leverage plot show no values with extraordinary Cook's distances. The Bonferroni-adjusted outlier test indicates no outliers, however, it shows the observation with the largest studentized residual is observation 377.
 
 ### 11. In this problem we will investigate the t-statistic for the null hypothesis $H_0 : \beta = 0$ in simple linear regression without an intercept. To begin, we generate a predictor x and a response y as follows:
 ```{r}
@@ -235,17 +236,17 @@ y = 2*x + rnorm(100)
 fit.y_no_intercept = lm(y ~ x + 0)
 summary(fit.y_no_intercept)
 ```
-??????
+$\hat{\beta} = 1.99$ for the x predictor. The p-value for the F-statistic of the model is below 0.05 so we can say the model is significant and the $R^2$ is 0.77 so the model fits the data fairly well.
 
 #### (b)  Now perform a simple linear regression of x onto y without an intercept, and report the coefficient estimate, its standard error, and the corresponding t-statistic and p-values associated with the null hypothesis $H_0 : \beta = 0$. Comment on these results.
 ```{r}
 fit.x_no_intercept = lm(x ~ y + 0)
 summary(fit.x_no_intercept)
 ```
-?????
+$\hat{\beta} = 0.39$ for the y predictor. Similar to the previous model, the p-value for the F-statistic of the model is below 0.05 so we can say the model is significant and the $R^2$ is 0.77 so the model fits the data fairly well. 
 
 #### (c) What is the relationship between the results obtained in (a) and (b)?
-
+They are both modeling the same line so they have different coefficients but the same regression diagnostics.
 
 #### (d) For the regression of Y onto X without an intercept, the t-statistic for $H_0 : \beta = 0$ takes the form $\hat{\beta}/SE(\hat{\beta})$, where $\hat{\beta}$ is given by (3.38), and where $$SE(\hat{\beta}) = \sqrt{\frac{\sum_{i=1}^{n} (y_i - x_i\hat{\beta})^{2}}{(n-1)\sum_{i'}^{2}}}$$. (These formulas are slightly different from those given in Sections 3.1.1 and 3.1.2, since here we are performing regression without an intercept.) Show algebraically, and confirm numerically in R, that the t-statistic can be written as $$\frac{\sqrt{n-1}\sum_{i=1}^{n}x_iy_i}{\sqrt{(\sum_{i=1}^{n}x_{i}^{2})(\sum_{i'=1}^{n}y_{i`}^{2}) - (\sum_{i'=1}^{n}x_{i'}y_{i'})^{2})}}$$
 
