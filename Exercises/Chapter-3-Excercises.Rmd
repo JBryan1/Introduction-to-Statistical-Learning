@@ -1,5 +1,5 @@
 ---
-title: "Chapter-3-Excercises"
+title: "Chapter 3 Excercises"
 author: "Jonathan Bryan"
 date: "July 26, 2017"
 output:
@@ -7,7 +7,7 @@ output:
   html_document: default
 ---
 
-### 1.Describe the null hypotheses to which the p-values given in Table 3.4 correspond. Explain what conclusions you can draw based on these p-values. Your explanation should be phrased in terms of sales, TV, radio, and newspaper, rather than in terms of the coefficients of the linear model.
+### 1. Describe the null hypotheses to which the p-values given in Table 3.4 correspond. Explain what conclusions you can draw based on these p-values. Your explanation should be phrased in terms of sales, TV, radio, and newspaper, rather than in terms of the coefficients of the linear model.
 The null hypothesis tested for the coefficients in the linear regression model asserts that there is no relationship between the predictor and the response variable, which mathematically means the coefficient is zero. At an alpha level of 0.05 we can say that both TV and radio advertising spending are significant predictors for the sales response variable. More specifically, the model says that every dollar towards TV advertising is associated with an additional \$46 in sales and every  dollar towards radio advertising is associated with \$189 dollars in sales.
 
 ### 2. Carefully explain the differences between the KNN classifier and KNN regression methods
@@ -49,17 +49,24 @@ Show that we can write $$\hat{y_i} = \sum_{j=1}^na_jy_j$$.
 
 What is $a_j$?
 
-$$\hat{y_i} = x_i(\frac{\sum_{j = 1}^{n} x_jy_j}{\sum_{k=1}^{n}x_k^2})$$
-$$\hat{y_i} = \sum_{j = 1}^{n}(\frac{ x_jx_i}{\sum_{k=1}^{n}x_k^2})y_j$$
-$$a_j = (\frac{\sum_{j = 1}^{n} x_jx_i}{\sum_{k=1}^{n}x_k^2})$$
+$$\begin{aligned}
+\hat{y_i} &= x_i(\frac{\sum_{j = 1}^{n} x_jy_j}{\sum_{k=1}^{n}x_k^2})\\
+\hat{y_i} &= \sum_{j = 1}^{n}(\frac{ x_jx_i}{\sum_{k=1}^{n}x_k^2})y_j\\
+a_j &= (\frac{\sum_{j = 1}^{n} x_jx_i}{\sum_{k=1}^{n}x_k^2})
+\end{aligned}$$
+
+
 ### 6. Using (3.4), argue that in the case of simple linear regression, the least squares line always passes through the point $(\bar{x},\bar{y})$.
-$$\beta_0 = \bar{y} - \beta_1\bar{x}$$
-$$y = \beta_0 + x_i\beta_1 $$
-$$y = \bar{y} - \bar{x}\beta_1 + x_i\beta_1$$
-$$x_i = \bar{x},\; y = \bar{y} - \bar{x}\beta_1 + \bar{x}\beta_1 = \bar{y}$$
+$$\begin{aligned}
+\beta_0 &= \bar{y} - \beta_1\bar{x}\\
+y &= \beta_0 + x_i\beta_1\\
+y &= \bar{y} - \bar{x}\beta_1 + x_i\beta_1\\
+x_i &= \bar{x},\; y = \bar{y} - \bar{x}\beta_1 + \bar{x}\beta_1 = \bar{y}
+\end{aligned}$$
 
 ### 7.It is claimed in the text that in the case of simple linear regression of Y onto X, the $R^2$ statistic (3.17) is equal to the square of the correlation between X and Y (3.18). Prove that this is the case. For simplicity, you may assume that $\bar{x} = \bar{y} = 0$.
-$\begin{aligned}
+
+$$\begin{aligned}
 &R^2 = \frac{TSS - RSS}{TSS} = 1 - \frac{RSS}{TSS}\\
 &R^2 = 1 - \frac{\sum(y_i - \hat{y})^2}{\sum(y_i - \bar{y})^2}\\
 &R^2 = 1 - \frac{\sum(y_i - \hat{y})^2}{\sum(y_i)^2}\\
@@ -78,7 +85,8 @@ $\begin{aligned}
 &Cor(X,Y)^2 = (\frac{\sum_{i=1}^n (x_i - \bar{x})(y_i - \bar{y})} {\sqrt{ \sum_{i=1}^n (x_i-\bar{x})^2}\sqrt{ \sum_{i=1}^n (y_i-\bar{y})^2}})^2\\
 &Cor(X,Y)^2 = \frac{(\sum_{i=1}^n (x_i - \bar{x})(y_i - \bar{y}))^2} {\sum_{i=1}^n (x_i-\bar{x})^2 \sum_{i=1}^n (y_i-\bar{y})^2}\\
 &Cor(X,Y)^2 = \frac{(\sum_{i=1}^n (x_i)(y_i))^2} {\sum_{i=1}^n (x_i)^2 \sum_{i=1}^n (y_i)^2}\\
-&R^2 = \frac{\sum (x_i^2)(y_i^2)}{\sum(y_i^2)\sum(x_i^2)} = Cor(X,Y)^2 = \frac{(\sum_{i=1}^n (x_i)(y_i))^2} {\sum_{i=1}^n (x_i)^2 \sum_{i=1}^n (y_i)^2}\\
+&R^2 = \frac{\sum (x_i^2)(y_i^2)}{\sum(y_i^2)\sum(x_i^2)} = Cor(X,Y)^2 = \frac{(\sum_{i=1}^n (x_i)(y_i))^2} {\sum_{i=1}^n (x_i)^2 \sum_{i=1}^n (y_i)^2}
+\end{aligned}$$
 
 ### 8. This question involves the use of simple linear regression on the Auto data set.
 

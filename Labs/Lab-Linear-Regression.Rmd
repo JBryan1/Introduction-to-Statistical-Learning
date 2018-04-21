@@ -1,17 +1,18 @@
 ---
-title: "Lab-Linear-Regression"
+title: "Lab: Linear Regression"
 author: "Jonathan Bryan"
 date: "May 18, 2017"
 output: pdf_document
+fontsize: llpt
 ---
 
-3.6.1 Libraries
+### 3.6.1 Libraries
 ```{r}
 library(MASS)
 library(ISLR)
 ```
 
-3.6.2 Simple Linear Regression
+### 3.6.2 Simple Linear Regression
 ```{r}
 boston = Boston
 fix(boston)
@@ -57,7 +58,7 @@ which.max(hatvalues(lm.fit)) #Index with largest hat value
 ```
 
 
-3.6.3 Multiple Linear Regression
+### 3.6.3 Multiple Linear Regression
 ```{r}
 #MLR with just lstat and age as predictors
 lm.fit = lm(medv ~ lstat + age, data = boston)
@@ -81,13 +82,13 @@ lm.fit1 = lm(medv ~ . -age, data = boston)
 summary(lm.fit1)
 ```
 
-3.6.4 Interaction Terms
+### 3.6.4 Interaction Terms
 ```{r}
 lm.fit_interaction = lm(medv ~ lstat*age, data = boston) #The * is equivalent to lstat+age+lstat:age
 summary(lm.fit_interaction)
 ```
 
-3.6.5 Non-linear Transformations of the Predictors
+### 3.6.5 Non-linear Transformations of the Predictors
 ```{r}
 lm.fit_non_linear = lm(medv ~ lstat + I(lstat^2), data = boston)
 summary(lm.fit_non_linear)
@@ -117,7 +118,7 @@ lm.log = lm(medv ~ log(lstat), data = boston)
 summary(lm.log)
 ```
 
-3.6.6 Qualitative Predictors
+### 3.6.6 Qualitative Predictors
 ```{r}
 fix(Carseats)
 names(Carseats)
@@ -134,7 +135,7 @@ attach(Carseats)
 contrasts(ShelveLoc)
 ```
 
-3.6.7 Writing Functions
+### 3.6.7 Writing Functions
 ```{r}
 LoadLibraries = function(){
   library(ISLR)

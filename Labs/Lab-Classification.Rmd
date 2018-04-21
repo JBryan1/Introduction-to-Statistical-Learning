@@ -1,0 +1,222 @@
+---
+title: "Lab: Logistic Regression, LDA, QDA, and KNN"
+author: "Jonathan Bryan"
+date: "April 19, 2018"
+output: pdf_document
+---
+
+### 4.6.1 The Stock Market Data
+```{r}
+library(ISLR)
+names(Smarket)
+dim(Smarket)
+summary(Smarket)
+```
+
+Correlation matrix 
+```{r}
+round(cor(Smarket[,-9]),3)
+```
+
+Plot Volume and Year
+```{r}
+plot(x=Smarket$Year, y=Smarket$Volume,
+     main = "Stock Market Volume over Time",
+     xlab = "Year",
+     ylab = "Share Volume")
+```
+
+Logistic Regression
+```{r}
+glm.fit = glm(Direction ~ . -Year -Today, data = Smarket, family = binomial)
+summary(glm.fit)
+```
+
+Accessing Coefficients
+```{r}
+coef(glm.fit)
+summary(glm.fit)$coef
+summary(glm.fit)$coef[,4] #p-values
+```
+
+Logistic Regression Prediction
+```{r}
+glm.probs=predict(glm.fit, type = "response") #Use training data for predictions
+round(glm.probs[1:10],3)
+contrasts(Smarket$Direction)
+```
+
+Converting Probabilites into Direction
+```{r}
+glm.pred = rep("Down", 1250)
+glm.pred[glm.probs > .5] = "Up"
+```
+
+Confusion Matrix
+```{r}
+table(glm.pred, Smarket$Direction)
+(145 +507)/1250
+mean(glm.pred == Smarket$Direction) #Accuracy
+```
+
+Cross Validation
+```{r}
+train = Smarket$Year < 2005
+Smarket.2005 = Smarket[!train,]
+dim(Smarket.2005)
+Direction.2005 = Smarket$Direction[!train]
+
+#Train new model
+glm.fit = glm(Direction ~ . -Year -Today, family = binomial, data = Smarket, subset = train)
+glm.probs = predict(glm.fit, newdata = Smarket.2005, type = "response")
+
+#New predictions
+glm.pred = rep("Down", nrow(Smarket.2005))
+glm.pred[glm.probs > 0.5] = "Up"
+table(glm.pred, Direction.2005)
+mean(glm.pred == Direction.2005) #Test set accuracy
+```
+
+Refit the Logistical Regression with only Lag1 and Lag2
+```{r}
+glm.fit = glm(Direction ~ Lag1 + Lag2, family = binomial, data = Smarket, subset = train)
+glm.probs = predict(glm.fit, newdata = Smarket.2005, type = "response")
+glm.pred = rep("Down" , nrow(Smarket.2005))
+glm.pred[glm.probs > 0.5] = "Up"
+table(glm.pred, Direction.2005)
+mean(glm.pred == Direction.2005) #Test set accuracy
+```
+
+Prediction for Specific Values
+```{r}
+predict(glm.fit, newdata = data.frame(Lag1 = c(1.2,1.5), Lag2 = c(1.1,-0.8)), type = "response")
+```
+
+### 4.6.3 Linear Discriminant Analysis
+```{r}
+library(MASS)
+lda.fit = lda(Direction ~ Lag1 + Lag2, data= Smarket, subset = train)
+lda.fit
+plot(lda.fit, main = "LDA Estimation")
+```
+
+LDA Prediction
+```{r}
+lda.pred = predict(lda.fit, newdata = Smarket.2005)
+names(lda.pred)
+lda.class = lda.pred$class
+table(lda.class, Direction.2005)
+mean(lda.class == Direction.2005) #Accuracy
+```
+
+Changing LDA Thresholds
+```{r}
+library(data.table)
+library(dplyr)
+
+#Notice that the postive posterior probability corresponds to the null or "Down" days
+sum(lda.pred$posterior[,1] >=0.5)
+sum(lda.pred$posterior[,1] < 0.5)
+df = data.frame(PostProb = round(lda.pred$posterior[1:20,1],3), Class = lda.class[1:20])
+df_t = transpose(df)
+colnames(df_t) = rownames(df)
+rownames(df_t) = colnames(df)
+knitr::kable(df_t[,1:10])
+knitr::kable(df_t[,11:20])
+```
+
+Highest Predicted Probability is Low
+```{r}
+sum(lda.pred$posterior[,1] > .90)
+max(lda.pred$posterior)
+```
+
+### 4.6.4 Quadratic Discriminant Analysis
+```{r}
+qda.fit = qda(Direction ~ Lag1 + Lag2, data= Smarket, subset = train)
+qda.fit
+```
+
+QDA Prediction
+```{r}
+qda.class = predict(qda.fit, newdata=Smarket.2005, type = "response")$class
+table(qda.class, Direction.2005)
+mean(qda.class == Direction.2005)
+```
+
+### 4.6.5 K-Nearest Neighbors
+
+```{r}
+#Set up KNN data
+library(class)
+train.X = Smarket[train,c("Lag1","Lag2")]
+test.X = Smarket.2005[,c("Lag1","Lag2")]
+train.Direction = Smarket[train,]$Direction
+```
+
+```{r}
+#KNN model where K=1 (very flexible)
+set.seed(1)
+knn.pred=knn(train.X,test.X,train.Direction,k=1)
+table(knn.pred, Direction.2005)
+mean(knn.pred == Direction.2005) #Accuracy
+```
+```{r}
+#KNN model where K=3 (less flexible)
+knn.pred=knn(train.X,test.X,train.Direction,k=3)
+table(knn.pred, Direction.2005)
+mean(knn.pred == Direction.2005) #Accuracy
+```
+
+### 4.6.6 An Application to Caravan Insurance Data
+
+```{r}
+dim(Caravan)
+summary(Caravan$Purchase)
+348/nrow(Caravan)
+```
+
+```{r}
+set.seed(1)
+#KNN is sensitive to scale so we standardize the data
+standardized.X = scale((Caravan[,-86]))
+test = 1:1000
+train.X = standardized.X[-test,]
+test.X = standardized.X[test,]
+train.Y = Caravan$Purchase[-test]
+test.Y = Caravan$Purchase[test]
+
+#Fit the new model
+knn.pred = knn(train.X, test.X, train.Y, k=1)
+mean(test.Y != knn.pred) #Error rate
+mean(test.Y != "No") #Empirical rate for purchased insurance
+table(knn.pred, test.Y)
+9/(68+9) #Sensitivity
+```
+
+```{r}
+#Decreasing KNN flexibility gives us higher sensitivity
+knn.pred = knn(train.X,test.X,train.Y,k=3)
+table(knn.pred,test.Y)
+table(knn.pred,test.Y)[2,2]/(table(knn.pred,test.Y)[2,1]+table(knn.pred,test.Y)[2,2])
+
+knn.pred = knn(train.X,test.X,train.Y,k=5)
+table(knn.pred,test.Y)
+table(knn.pred,test.Y)[2,2]/(table(knn.pred,test.Y)[2,1]+table(knn.pred,test.Y)[2,2])
+```
+
+```{r warning=FALSE, message=FALSE}
+#Logistic regression comparison (0.5 cutoff)
+glm.fit = glm(Purchase ~ ., family = binomial, data = Caravan[-test,])
+glm.probs = predict(glm.fit, type = "response", newdata = Caravan[test,])
+glm.pred = rep("No",1000)
+glm.pred[glm.probs > 0.5] = "Yes"
+table(glm.pred, test.Y)
+table(glm.pred, test.Y)[2,2] / (table(glm.pred, test.Y)[2,1] + table(glm.pred, test.Y)[2,2])
+
+#Logistic regression comparison (0.25) cutoff)
+glm.pred[glm.probs > 0.25] = "Yes"
+table(glm.pred, test.Y)
+table(glm.pred, test.Y)[2,2] / (table(glm.pred, test.Y)[2,1] + table(glm.pred, test.Y)[2,2])
+
+```
