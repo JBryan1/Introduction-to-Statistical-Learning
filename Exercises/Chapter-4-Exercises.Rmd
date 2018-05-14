@@ -5,7 +5,7 @@ date: "April 20, 2018"
 output: pdf_document
 ---
 
-### 1.Using a little bit of algebra, prove that (4.2) is equivalent to (4.3). In other words, the logistic function representation and logit representation for the logistic regression model are equivalent.
+### 1. Using a little bit of algebra, prove that (4.2) is equivalent to (4.3). In other words, the logistic function representation and logit representation for the logistic regression model are equivalent.
 
 $$\begin{aligned}
 p(x) &= \frac{e^{\beta_0 + \beta_1X}}{1 + e^{\beta_0 + \beta_1X}} \text{ (Logistic function)}\\
@@ -16,13 +16,13 @@ p(x)& = e^{\beta_0 + \beta_1X} (1 + p(x))\\
 log(\frac{p(x)}{(1 + p(x))}) &= \beta_0 + \beta_1X \text{ (logit transformation)}
 \end{aligned}$$
 
-### 2.It was stated in the text that classifying an observation to the class for which (4.12) is largest is equivalent to classifying an observation to the class for which (4.13) is largest. Prove that this is the case. In other words, under the assumption that the observations in the kth class are drawn from a $N(\mu_k, \sigma^2)$ distribution, the Bayes' classifier assigns an observation to the class for which the discriminant function is maximized.
+### 2. It was stated in the text that classifying an observation to the class for which (4.12) is largest is equivalent to classifying an observation to the class for which (4.13) is largest. Prove that this is the case. In other words, under the assumption that the observations in the kth class are drawn from a $N(\mu_k, \sigma^2)$ distribution, the Bayes' classifier assigns an observation to the class for which the discriminant function is maximized.
 
 Given $X \sim N(\mu_k, \sigma^2)$ and that $log()$ is a monotonically increase function such that,
 $$\forall x,y,\; x \leq y,\; log(x) < log(y)$$
 We can conclude that, $arg_X \;max\; p_k(X) =  arg_X \;max\; log(p_k(X))$
 
-### 3. This problem relates to the QDA model, in which the observations wwithin each class are drawn from a normal distribution with a class specific mean vector and a class specific covariance matrix. We consider the simple case where p = 1; i.e. there is only one feature. Suppose that we have K classes, and that if an observation belongs to the kth class then X comes from a one-dimensional normal distribution, $X \sim N(\mu_k, \sigma_k^2). Recall that the density function for the one-dimensional normal distribution is given in (4.11). Prove that in this case, the Bayes' classifier is not linear. Argue that it is in fact quadratic.
+### 3. This problem relates to the QDA model, in which the observations within each class are drawn from a normal distribution with a class specific mean vector and a class specific covariance matrix. We consider the simple case where p = 1; i.e. there is only one feature. Suppose that we have K classes, and that if an observation belongs to the kth class then X comes from a one-dimensional normal distribution, $X \sim N(\mu_k, \sigma_k^2). Recall that the density function for the one-dimensional normal distribution is given in (4.11). Prove that in this case, the Bayes' classifier is not linear. Argue that it is in fact quadratic.
 
 $$\begin{aligned}
 p_k(X) &= \frac{1}{\sqrt{2\pi}\sigma_k}e^{-\frac{1}{2\sigma_k^2}(x - \mu_k)^2}\pi_k\\
@@ -35,4 +35,51 @@ As shown above, we find the value of $k$ that maximizes the observed $x$. We see
 
 ### 4. When the number of features p is large, there tends to be a deterioration in the performance of KNN and other local approaches that perform prediction using only observations that are near the test observation for which a prediction must be made. This phenomenon is known as the curse of dimensionality, and it ties into the fact that non-parametric approaches often perform poorly when p is large. We will now investigate this curse.
 
-### (a)
+#### (a) Suppose that we have a set of observations, each with measurements on p = 1 feature, X. We assume that X is uniformly (evenly) distributed on [0, 1]. Associated with each observation is a response value. Suppose that we wish to predict a test observation's response using only observations that are within 10% of the range of X closest to that test observation. For instance, in order to predict the response for a test observation with X = 0.6, we will use observations in the range [0.55, 0.65]. On average, what fraction of the available observations will we use to make the prediction?
+
+
+We know that when $x$ is in between $0.05$ and $0.95$ we will have 10 percent of the observations available because there is at least $[x - 0.5, x + 0.5]$ available on both sides of the point. When $x$ is below $0.05$ there is only $x + 0.05$ observations available and it varies with x, similarly, when $x$ is above $0.95$ there is only $1.05 - x$ observations available. We can show:
+
+For $X \in (0.05,0.95): \; \int_{0.05}^{0.95}0.10 \; dx = 0.10x|_{0.05}^{0.95} = .09$\\
+For $X \in (0,0.05): \; \int_{0}^{0.05}x + 0.05 \; dx = x^2/2+ 0.05x|_{0}^{0.05} = .00375$\\
+For $X \in (0.95, 1): \; \int_{0.95}^{1}1.05 - x \; dx = 1.05x-x^2/2|_{0.95}^{1} = .00375$\\
+
+Therefore, on average there are 9.75 percent of observations available.
+
+####(b) Now suppose that we have a set of observations, each with measurements on p = 2 features, $X_1$ and $X_2$. We assume that ($X_1$,$X_2$) are uniformly distributed on [0, 1] × [0, 1]. We wish to predict a test observation's response using only observations that are within 10% of the range of $X_1$ and within 10% of the range of $X_2$ closest to that test observation. For instance, in order to predict the response for a test observation with $X_1$ = 0.6 and $X_2$ = 0.35, we will use observations in the range [0.55, 0.65] for $X_1$ and in the range [0.3, 0.4] for $X_2$. On average, what fraction of the available observations will we use to make the prediction?
+
+Given $X_1$ and $X_2$ are independent, we know that the probability space of the joint distribution is much smaller for each point compared to the one dimensional space. For instance, if we evaluated the average number of available observations for $X_1, X_2 \in (0.05,0.95)$ we would have $0.1 * 0.1 = 0.01$ observations available on average. Since we know the true average over the full domain of the marginal distributions we can compute $0.0975 * 0.0975 = $.950625 percent.
+
+####(c) Now suppose that we have a set of observations on p = 100 features. Again the observations are uniformly distributed on each feature, and again each feature ranges in value from 0 to 1. We wish to predict a test observation's response using observations within the 10% of each feature's range that is closest to that test observation. What fraction of the available observations will we use to make the prediction?
+
+Given all variables are independent, we can compute $.0975^{100}$ percent of observations are available. A very small amount.
+
+####(d) Using your answers to parts (a)-(c), argue that a drawback of KNN when p is large is that there are very few training observations "near" any given test observation.
+
+As p increases, the domain of the predictors becomes much more sparse between points and the probability that training observation is near the test observation becomes lower. This means KNN loses prediction accuracy because training observations become much more unique as the number of predictors increases.
+
+####(e) Now suppose that we wish to make a prediction for a test observation by creating a p-dimensional hypercube centered around the test observation that contains, on average, 10% of the training observations. For p = 1, 2, and 100, what is the length of each side of the hypercube? Comment on your answer.
+
+In general, the hypercube must increase in size as the number of predictors increases because of the sparsity described in part (d). We can show that for p = 1: 
+$l = .10$, such that when $X \in (0,0.05)$ or $(.95,1)$ we always extend the length to equal 10 and not just within $\pm 0.05$ of the training observation. Extending this out we get for p = 2 and p = 100: $l_2 = \sqrt{.10}, \; l_100 = .10^{1/100}$
+
+###5. We now examine the differences between LDA and QDA.
+
+First we give the models for LDA and QDA, where each assumes the data is nomrally distributed and conditioned on class and LDA further assumed shared covariance.
+
+LDA classifier: $\delta_k(x) = x^T \hat{\Sigma^{-1}} \hat{\mu_k} - \frac{1}{2}\hat{\mu_k^T} \hat{\Sigma^{-1}} \hat{\mu_k} + log(\pi_k)$ 
+QDA classifier: $\delta_k(x) = -\frac{1}{2}(x - \mu_k)^T \hat{\Sigma_k^{-1}} (x - \mu_k) - \frac{1}{2}log(|\hat{\Sigma_k}|) + log(\pi_k)$
+
+Where for both models in the binary case: $f(Y | x) = \begin{cases} 0, \text{ if } \delta_0 > \delta_1\\ 1, \text{ if } \delta_1 > \delta_0 \end{cases}$
+
+####(a) If the Bayes decision boundary is linear, do we expect LDA or QDA to perform better on the training set? On the test set?
+Because QDA is more flexible than LDA we would expect it to perform better on the training set but worse on the test set due to overfitting on average.
+
+####(b) If the Bayes decision boundary is non-linear, do we expect LDA or QDA to perform better on the training set? On the test set?
+We would expect QDA to perform better on both the training and test set on average.
+
+####(c) In general, as the sample size n increases, do we expect the test prediction accuracy of QDA relative to LDA to improve, decline, or be unchanged? Why?
+As the training sample size increases, the variation of the more flexible QDA model lowers and therefore it improves relative to LDA.
+
+####(d) (d) True or False: Even if the Bayes decision boundary for a given problem is linear, we will probably achieve a superior test error rate using QDA rather than LDA because QDA is flexible enough to model a linear decision boundary. Justify your answer.
+False. Unless the number of training samples is substantial, QDA has a higher model variance and will overfit to the training data leading to inferior test error rates compared to LDA.
