@@ -65,7 +65,7 @@ $l = .10$, such that when $X \in (0,0.05)$ or $(.95,1)$ we always extend the len
 
 ###5. We now examine the differences between LDA and QDA.
 
-First we give the models for LDA and QDA, where each assumes the data is nomrally distributed and conditioned on class and LDA further assumed shared covariance.
+First we give the models for LDA and QDA, where each assumes the data is normally distributed and conditioned on class and LDA further assumed shared covariance.
 
 LDA classifier: $\delta_k(x) = x^T \hat{\Sigma^{-1}} \hat{\mu_k} - \frac{1}{2}\hat{\mu_k^T} \hat{\Sigma^{-1}} \hat{\mu_k} + log(\pi_k)$ 
 QDA classifier: $\delta_k(x) = -\frac{1}{2}(x - \mu_k)^T \hat{\Sigma_k^{-1}} (x - \mu_k) - \frac{1}{2}log(|\hat{\Sigma_k}|) + log(\pi_k)$
@@ -83,3 +83,53 @@ As the training sample size increases, the variation of the more flexible QDA mo
 
 ####(d) (d) True or False: Even if the Bayes decision boundary for a given problem is linear, we will probably achieve a superior test error rate using QDA rather than LDA because QDA is flexible enough to model a linear decision boundary. Justify your answer.
 False. Unless the number of training samples is substantial, QDA has a higher model variance and will overfit to the training data leading to inferior test error rates compared to LDA.
+
+### 6. Suppose we collect data for a group of students in a statistics class with variables $X_1$ =hours studied, $X_2$ =undergrad GPA, and Y = receive an A. We fit a logistic regression and produce estimated coefficient, $\hat{\beta_0}$ = ???6, $\hat{\beta_1}$ = 0.05, $\hat{\beta_2}$ = 1.
+
+####(a) Estimate the probability that a student who studies for 40 h and has an undergrad GPA of 3.5 gets an A in the class.
+$$\begin{aligned}
+log(\frac{\pi}{1 - \pi}) &= -6 + 0.05(40) + 1(3.5)\\
+\frac{\pi}{1 - \pi} &= exp\{-0.5\}\\
+\pi &= exp\{-0.5\} (1 - \pi)\\
+\pi &=  exp\{-0.5\} - exp\{-0.5\}\pi\\
+\pi + exp\{-0.5\}\pi&=  exp\{-0.5\}\\
+\pi (1 + exp\{-0.5\})&=  exp\{-0.5\}\\
+\pi &=  \frac{exp\{-0.5\}}{(1 + exp\{-0.5\})}\\
+\pi &\approx .38
+\end{aligned}$$
+
+####(b) How many hours would the student in part (a) need to study to have a 50% chance of getting an A in the class?
+$$\begin{aligned}
+log(\frac{.5}{.5}) &= -6 + 0.05(x_1) + 1(3.5)\\
+log(1) &= -6 + 0.05(x_1) + 1(3.5)\\
+log(1) + 6 -1(3.5)&= 0.05(x_1)\\
+x_1 &= \frac{log(1) + 6 -1(3.5)}{0.05}\\
+x_1 &= 50
+\end{aligned}$$
+
+### 7. Suppose that we wish to predict whether a given stock will issue a dividend this year ("Yes" or "No") based on X, last year's percent profit.We examine a large number of companies and discover that the mean value of X for companies that issued a dividend was $\bar{X}$ = 10, while the mean for those that didn't was $\bar{X}$ = 0. In addition, the variance of X for these two sets of companies was $\hat{\sigma}^2$ = 36. Finally, 80% of companies issued dividends. Assuming that X follows a normal distribution, predict the probability that a company will issue a dividend this year given that its percentage profit was X = 4 last year.
+$$\begin{aligned}
+Pr(Y | X) &= \frac{Pr(X | Y) Pr(Y)}{\Sigma_{y \in Y}Pr(X | Y) Pr(Y)}\\
+Pr(Y = Yes | X = 4) &= \frac{1}{\sqrt{72\pi}}exp\{-\frac{1}{72}(4 - 10)^2\}\\
+Pr(Y = Yes | X = 4) &= .040\\
+Pr(Y = No | X = 4) &= \frac{1}{\sqrt{72\pi}}exp\{-\frac{1}{72}(4 - 0)^2\}\\
+Pr(Y = No | X = 4) &= .053\\
+Pr(Y) &= 0.8\\
+\Sigma_{y \in Y}Pr(X | Y) Pr(Y) &= (.040)*(.80) + (.053)*(.20) = .0426\\
+Pr(Y | X) &= \frac{(.040) * (.80)}{(.0426)} = .751
+\end{aligned}$$
+
+### 8. Suppose that we take a data set, divide it into equally-sized training and test sets, and then try out two different classification procedures. First we use logistic regression and get an error rate of 20% on the training data and 30% on the test data. Next we use 1-nearest neighbors (i.e. K = 1) and get an average error rate (averaged over both test and training data sets) of 18%. Based on these results, which method should we prefer to use for classification of new observations? Why?
+If K = 1 for a KNN model, the training error will be 0% because the nearest neighbor will always be the training point being evaluated. This means the test error rate of the KNN model is 36%, which is higher than the logistic regression training error rate of 30%. The logistic regression model is preferred.
+
+### 9. This problem has to do with odds. 
+
+#### (a) On average, what fraction of people with an odds of 0.37 of defaulting on their credit card payment will in fact default?
+$$\frac{\pi}{1 - \pi} = 0.37$$\\
+$$\pi = 0.37(1 - \pi)$$\\
+$$\pi = 0.37 - 0.37\pi$$\\
+$$1.37\pi = 0.37$$\\
+$$\pi = \frac{0.37}{1.37} = 27\%$$
+
+#### (b) Suppose that an individual has a 16% chance of defaulting on her credit card payment. What are the odds that she will default?
+$$\frac{.16}{1 - .16} = 0.19$$\\
