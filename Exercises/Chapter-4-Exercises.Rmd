@@ -133,3 +133,160 @@ $$\pi = \frac{0.37}{1.37} = 27\%$$
 
 #### (b) Suppose that an individual has a 16% chance of defaulting on her credit card payment. What are the odds that she will default?
 $$\frac{.16}{1 - .16} = 0.19$$\\
+
+### 10. This question should be answered using the Weekly data set, which is part of the ISLR package. This data is similar in nature to the Smarket data from this chapter's lab, except that it contains 1,089 weekly returns for 21 years, from the beginning of 1990 to the end of 2010.
+
+#### (a) Produce some numerical and graphical summaries of the Weekly data. Do there appear to be any patterns?
+```{r}
+library(ISLR)
+library(corrplot)
+
+#Change direction to numerical
+Weekly$Direction = as.numeric(Weekly$Direction) - 1
+
+#Histograms
+par(mfrow=c(3,3))
+for (i in 1:(dim(Weekly)[2])){
+  hist(Weekly[,i], main = paste0("Histogram of ", colnames(Weekly)[i]),
+                  xlab = colnames(Weekly)[i])
+}
+
+#Correlation
+M = cor(Weekly)
+corrplot(M, main = "Correlation of Numerical Variables")
+```
+
+We observe that returns look approximately normally distributed around zero. There are more positive gain days than negative. Volume has a positive weak correlatation with year and market direction has a postive weak correlation with today's returns.
+
+
+#### (b) Use the full data set to perform a logistic regression with Direction as the response and the five lag variables plus Volume as predictors. Use the summary function to print the results. Do any of the predictors appear to be statistically significant? If so, which ones?
+```{r message= FALSE, warning=FALSE}
+library(stargazer)
+
+#Logistic regression model
+log_reg = glm(Direction ~ . -Year - Today, family = "binomial", data = Weekly)
+stargazer(log_reg)
+```
+
+Percentage return for 2 weeks previous is statistically significance at the $\alpha = 0.05$ level.
+
+#### (c) Compute the confusion matrix and overall fraction of correct predictions. Explain what the confusion matrix is telling you about the types of mistakes made by logistic regression.
+```{r}
+library(caret)
+
+log_reg_pred = predict(log_reg, type="response")
+log_reg_pred[log_reg_pred >= 0.5] = 1
+log_reg_pred[log_reg_pred < 0.5] = 0
+confusionMatrix(as.factor(log_reg_pred), as.factor(Weekly$Direction), positive = "1")
+```
+
+The overall accuracy of the model is 56 percent. This is only marginally better than always predicting the market will go up, as the prevelance of the positive market movement is 55 percent. There logistic regression model has high sensitivity (correct 92 percent of the time) to positive market movements but very low specificity when predicting the market will go down (11 percent). A 95 percent confidence interval of the overall model accuracy is between 53 and 59 percent meaning the model could be either slightly better or worse than always predicting positive market movements.
+
+#### (d) Now fit the logistic regression model using a training data period from 1990 to 2008, with Lag2 as the only predictor. Compute the confusion matrix and the overall fraction of correct predictions for the held out data (that is, the data from 2009 and 2010).
+```{r}
+#Logistic regression model with Lag2 as only predictor
+log_reg2 = glm(Direction ~ Lag2, family = "binomial", data = Weekly, subset = (1990 <= Weekly$Year & Weekly$Year <= 2008))
+
+#Prediction
+log_reg2_pred = predict(log_reg2, newdata = Weekly[Weekly$Year >= 2009 & Weekly$Year <= 2010,],type = "response")
+log_reg2_pred[log_reg2_pred >= 0.5] = 1
+log_reg2_pred[log_reg2_pred < 0.5] = 0
+
+#Confusion matrix
+confusionMatrix(as.factor(log_reg2_pred), as.factor(Weekly[Weekly$Year >= 2009 & Weekly$Year <= 2010,]$Direction), positive = "1")
+```
+
+#### (e) Repeat (d) using LDA.
+```{r}
+library(MASS)
+
+#Linear discriminant analysis
+lda = lda(Direction ~ Lag2, data = Weekly, subset = (1990 <= Weekly$Year & Weekly$Year <= 2008))
+
+#Prediction
+lda_pred = predict(lda, newdata = Weekly[Weekly$Year >= 2009 & Weekly$Year <= 2010,],type = "response")$class
+
+#Confusion matrix
+confusionMatrix(as.factor(lda_pred), as.factor(Weekly[Weekly$Year >= 2009 & Weekly$Year <= 2010,]$Direction), positive = "1")
+```
+
+#### (f) Repeat (d) using QDA.
+```{r}
+#Quadratic discriminant analysis
+qda = qda(Direction ~ Lag2, data = Weekly, subset = (1990 <= Weekly$Year & Weekly$Year <= 2008))
+
+#Prediction
+qda_pred = predict(qda, newdata = Weekly[Weekly$Year >= 2009 & Weekly$Year <= 2010,],type = "response")$class
+
+#Confusion matrix
+confusionMatrix(as.factor(qda_pred), as.factor(Weekly[Weekly$Year >= 2009 & Weekly$Year <= 2010,]$Direction), positive = "1")
+```
+
+#### (g) Repeat (d) using KNN with K = 1.
+```{r}
+library(class)
+
+#KNN K = 1
+knn = knn(train = as.matrix(Weekly[1990 <= Weekly$Year & Weekly$Year <= 2008,]$Lag2),
+          test = as.matrix(Weekly[Weekly$Year >= 2009 & Weekly$Year <= 2010,]$Lag2),
+          cl = as.factor(Weekly[1990 <= Weekly$Year & Weekly$Year <= 2008,]$Direction))
+
+#Confusion matrix
+confusionMatrix(as.factor(knn), as.factor(Weekly[Weekly$Year >= 2009 & Weekly$Year <= 2010,]$Direction), positive = "1")
+```
+
+#### (h) Which of these methods appears to provide the best results on this data? 
+Both the logistic regression and and linear discriminant analysis models with the Lag2 predictor have nearly identical predictive power, with 62.5 percent overall accuracy. The KNN model has better specificity compared to the logistic regression and LDA models (.48 > .21) but it has an overall accuracy lower than the the no information rate (0.5 < 0.58). The logistic regression model would be preferred given it has equal performance to the LDA model and less model assumptions. 
+
+#### (i) Experiment with different combinations of predictors, including possible transformations and interactions, for each of the methods. Report the variables, method, and associated confusion matrix that appears to provide the best results on the held out data. Note that you should also experiment with values for K in the KNN classifier.
+
+**Logistic Regression**
+```{r}
+#Logistic regression model
+log_reg3 = glm(Direction ~ Lag1 + Lag2 + Year, family = "binomial", data = Weekly, subset = (1990 <= Weekly$Year & Weekly$Year <= 2008))
+
+#Prediction
+log_reg3_pred = predict(log_reg3, newdata = Weekly[Weekly$Year >= 2009 & Weekly$Year <= 2010,],type = "response")
+log_reg3_pred[log_reg3_pred >= 0.5] = 1
+log_reg3_pred[log_reg3_pred < 0.5] = 0
+
+#Confusion matrix
+confusionMatrix(as.factor(log_reg3_pred), as.factor(Weekly[Weekly$Year >= 2009 & Weekly$Year <= 2010,]$Direction), positive = "1")
+```
+
+**LDA**
+```{r}
+#Linear discriminant analysis
+lda2 = lda(Direction ~ Lag1 + Lag2 + Year, data = Weekly, subset = (1990 <= Weekly$Year & Weekly$Year <= 2008))
+
+#Prediction
+lda_pred2 = predict(lda2, newdata = Weekly[Weekly$Year >= 2009 & Weekly$Year <= 2010,],type = "response")$class
+
+#Confusion matrix
+confusionMatrix(as.factor(lda_pred2), as.factor(Weekly[Weekly$Year >= 2009 & Weekly$Year <= 2010,]$Direction), positive = "1")
+```
+
+**QDA**
+```{r}
+#Linear discriminant analysis
+qda2 = qda(Direction ~ Lag1 + Lag2 + Year, data = Weekly, subset = (1990 <= Weekly$Year & Weekly$Year <= 2008))
+
+#Prediction
+qda_pred2 = predict(qda2, newdata = Weekly[Weekly$Year >= 2009 & Weekly$Year <= 2010,],type = "response")$class
+
+#Confusion matrix
+confusionMatrix(as.factor(qda_pred2), as.factor(Weekly[Weekly$Year >= 2009 & Weekly$Year <= 2010,]$Direction), positive = "1")
+```
+
+**KNN, K = 5**
+```{r}
+#KNN K = 5
+knn = knn(train = as.matrix(Weekly[1990 <= Weekly$Year & Weekly$Year <= 2008,c("Lag1", "Lag2", "Year")]),
+          test = as.matrix(Weekly[Weekly$Year >= 2009 & Weekly$Year <= 2010,c("Lag1", "Lag2", "Year")]),
+          cl = as.factor(Weekly[1990 <= Weekly$Year & Weekly$Year <= 2008,]$Direction), k=5)
+
+#Confusion matrix
+confusionMatrix(as.factor(knn), as.factor(Weekly[Weekly$Year >= 2009 & Weekly$Year <= 2010,]$Direction), positive = "1")
+```
+Lag1 was added to each model because it was close to being significant in the full logistic regression model. Year was also added as different years may have had unqiue effects on market movements, such as recessions and booms. Both the logistic regression and LDA models had nearly identical performance and were superior to the QDA and KNN (K = 5) models. However, accuracy with the added variables was lower for each of the models compared to just using Lag2.
+
