@@ -290,3 +290,94 @@ confusionMatrix(as.factor(knn), as.factor(Weekly[Weekly$Year >= 2009 & Weekly$Ye
 ```
 Lag1 was added to each model because it was close to being significant in the full logistic regression model. Year was also added as different years may have had unqiue effects on market movements, such as recessions and booms. Both the logistic regression and LDA models had nearly identical performance and were superior to the QDA and KNN (K = 5) models. However, accuracy with the added variables was lower for each of the models compared to just using Lag2.
 
+### 10. In this problem, you will develop a model to predict whether a given car gets high or low gas mileage based on the Auto data set.
+
+#### (a) Create a binary variable, mpg01, that contains a 1 if mpg contains a value above its median, and a 0 if mpg contains a value below its median. You can compute the median using the median() function. Note you may find it helpful to use the data.frame() function to create a single data set containing both mpg01 and the other Auto variables.
+```{r}
+library(ISLR)
+
+#Create binary mpd variable
+mpg01_med= median(Auto$mpg)
+Auto$mpg01 = NA
+Auto[Auto$mpg >= mpg01_med,]$mpg01 = 1
+Auto[Auto$mpg < mpg01_med,]$mpg01 = 0
+```
+
+#### (b) Explore the data graphically in order to investigate the association between mpg01 and the other features. Which of the other features seem most likely to be useful in predicting mpg01? Scatterplots and boxplots may be useful tools to answer this question. Describe your findings.
+```{r}
+par(mfrow=c(2,4))
+for (i in 1:(ncol(Auto) - 2)){
+  plot(Auto[,i], Auto$mpg01, main = paste0(colnames(Auto)[i], " vs mpg"),
+                             xlab = colnames(Auto)[i],
+                             ylab = "mpg")
+}
+
+par(mfrow=c(2,4))
+for (i in 1:(ncol(Auto) - 2)){
+  boxplot(Auto[,i] ~ Auto$mpg01,
+          main = paste0(colnames(Auto)[i], " vs mpg"),
+          xlab = "Binary mpg",
+          ylab = colnames(Auto)[i])
+}
+```
+
+#### (c) Split the data into a training set and a test set.
+```{r}
+n = nrow(Auto)
+train = seq(1,0.75*n,1)
+Auto_train = Auto[train,]
+Auto_test = Auto[-train,]
+```
+
+#### (d) Perform LDA on the training data in order to predict mpg01 using the variables that seemed most associated with mpg01 in (b). What is the test error of the model obtained?
+```{r}
+lda_auto = lda(mpg01 ~ cylinders + displacement + horsepower + weight + year + origin, data = Auto_train)
+lda_auto_pred = predict(lda_auto, newdata = Auto_test)$class
+confusionMatrix(lda_auto_pred, as.factor(Auto_test$mpg01), positive = "1")
+```
+
+The LDA model uses cylinders, displacement, horsepower, weight, year, and origin as predictors. The overall test error is 14%. The sensitivity and specificity of the model is 0.84 and 1.0 respectively.
+
+#### (e) Perform QDA on the training data in order to predict mpg01 using the variables that seemed most associated with mpg01 in (b). What is the test error of the model obtained?
+```{r}
+qda_auto = qda(mpg01 ~ cylinders + displacement + horsepower + weight + year + origin, data = Auto_train)
+qda_auto_pred = predict(qda_auto, newdata = Auto_test)$class
+confusionMatrix(qda_auto_pred, as.factor(Auto_test$mpg01), positive = "1")
+```
+
+The QDA model's overall test error is 19%. The sensitivity and specificity of the model is 0.79 and 1.0 respectively.
+
+#### (f) Perform logistic regression on the training data in order to predict mpg01 using the variables that seemed most associated with mpg01 in (b). What is the test error of the model obtained?
+```{r}
+log_reg_auto = glm(mpg01 ~ cylinders + displacement + horsepower + weight + year + origin, family = "binomial", data = Auto_train)
+log_reg_auto_pred = predict(log_reg_auto, newdata = Auto_test, type = "response")
+log_reg_auto_pred[log_reg_auto_pred >= 0.5] = 1
+log_reg_auto_pred[log_reg_auto_pred < 0.5] = 0
+confusionMatrix(as.factor(log_reg_auto_pred), as.factor(Auto_test$mpg01), positive = "1")
+```
+
+The logistic regression model's overall test error is 17%. The sensitivity and specificity of the model is 0.81 and 1.0 respectively.
+
+#### (g) Perform KNN on the training data, with several values of K, in order to predict mpg01. Use only the variables that seemed most associated with mpg01 in (b). What test errors do you obtain? Which value of K seems to perform the best on this data set?
+```{r}
+set.seed(1)
+trControl = trainControl(method  = "cv",
+                          number  = 5)
+Auto$mpg01 = as.factor(Auto$mpg01)
+
+train(mpg01 ~ cylinders + displacement + horsepower + weight + year + origin,
+      method     = "knn",
+      tuneGrid   = expand.grid(k = 1:20),
+      trControl  = trControl,
+      metric     = "Kappa",
+      data       = Auto)
+```
+```{r}
+knn_auto = knn(Auto_train[,c("cylinders", "displacement", "horsepower", "weight", "year", "origin")],
+               Auto_test[,c("cylinders", "displacement", "horsepower", "weight", "year", "origin")],
+               Auto_train$mpg01, k = 11)
+confusionMatrix(knn_auto, as.factor(Auto_test$mpg01), positive = "1")
+```
+
+The KNN (K = 11) model's overall test error is 22%. The sensitivity and specificity of the model is 0.76 and 1.0 respectively.
+
