@@ -156,7 +156,7 @@ M = cor(Weekly)
 corrplot(M, main = "Correlation of Numerical Variables")
 ```
 
-We observe that returns look approximately normally distributed around zero. There are more positive gain days than negative. Volume has a positive weak correlatation with year and market direction has a postive weak correlation with today's returns.
+We observe that returns look approximately normally distributed around zero. There are more positive gain days than negative. Volume has a positive weak correlation with year and market direction has a positive weak correlation with today's returns.
 
 
 #### (b) Use the full data set to perform a logistic regression with Direction as the response and the five lag variables plus Volume as predictors. Use the summary function to print the results. Do any of the predictors appear to be statistically significant? If so, which ones?
@@ -180,7 +180,7 @@ log_reg_pred[log_reg_pred < 0.5] = 0
 confusionMatrix(as.factor(log_reg_pred), as.factor(Weekly$Direction), positive = "1")
 ```
 
-The overall accuracy of the model is 56 percent. This is only marginally better than always predicting the market will go up, as the prevelance of the positive market movement is 55 percent. There logistic regression model has high sensitivity (correct 92 percent of the time) to positive market movements but very low specificity when predicting the market will go down (11 percent). A 95 percent confidence interval of the overall model accuracy is between 53 and 59 percent meaning the model could be either slightly better or worse than always predicting positive market movements.
+The overall accuracy of the model is 56 percent. This is only marginally better than always predicting the market will go up, as the prevalence of the positive market movement is 55 percent. There logistic regression model has high sensitivity (correct 92 percent of the time) to positive market movements but very low specificity when predicting the market will go down (11 percent). A 95 percent confidence interval of the overall model accuracy is between 53 and 59 percent meaning the model could be either slightly better or worse than always predicting positive market movements.
 
 #### (d) Now fit the logistic regression model using a training data period from 1990 to 2008, with Lag2 as the only predictor. Compute the confusion matrix and the overall fraction of correct predictions for the held out data (that is, the data from 2009 and 2010).
 ```{r}
@@ -288,7 +288,7 @@ knn = knn(train = as.matrix(Weekly[1990 <= Weekly$Year & Weekly$Year <= 2008,c("
 #Confusion matrix
 confusionMatrix(as.factor(knn), as.factor(Weekly[Weekly$Year >= 2009 & Weekly$Year <= 2010,]$Direction), positive = "1")
 ```
-Lag1 was added to each model because it was close to being significant in the full logistic regression model. Year was also added as different years may have had unqiue effects on market movements, such as recessions and booms. Both the logistic regression and LDA models had nearly identical performance and were superior to the QDA and KNN (K = 5) models. However, accuracy with the added variables was lower for each of the models compared to just using Lag2.
+Lag1 was added to each model because it was close to being significant in the full logistic regression model. Year was also added as different years may have had unique effects on market movements, such as recessions and booms. Both the logistic regression and LDA models had nearly identical performance and were superior to the QDA and KNN (K = 5) models. However, accuracy with the added variables was lower for each of the models compared to just using Lag2.
 
 ### 10. In this problem, you will develop a model to predict whether a given car gets high or low gas mileage based on the Auto data set.
 
@@ -381,3 +381,206 @@ confusionMatrix(knn_auto, as.factor(Auto_test$mpg01), positive = "1")
 
 The KNN (K = 11) model's overall test error is 22%. The sensitivity and specificity of the model is 0.76 and 1.0 respectively.
 
+### 12. This problem involves writing functions.
+
+#### (a) Write a function, Power(), that prints out the result of raising 2 to the 3rd power. In other words, your function should compute $2^3$ and print out the results.
+```{r}
+Power = function(){
+  return(2^3)
+}
+```
+
+#### (b) Create a new function, Power2(), that allows you to pass any two numbers, x and a, and prints out the value of x^a.
+```{r}
+Power2 = function(x,a){
+  return(x^a)
+}
+```
+
+
+#### (c) Using the Power2() function that you just wrote, compute $10^3$, $8^17$, and $131^3$
+```{r}
+Power2(10,3)
+Power2(8,17)
+Power2(131,3)
+```
+
+#### (d) Now create a new function, Power3(), that actually returns the result x^a as an R object, rather than simply printing it to the screen.
+```{r}
+Power3 = function(x,a){
+  result = Power2(x,a)
+}
+```
+
+#### (e) Now using the Power3() function, create a plot of $f(x) == x^2$. The x-axis should display a range of integers from 1 to 10, and the y-axis should display $x2. Label the axes appropriately, and use an appropriate title for the figure. Consider displaying either the x-axis, the y-axis, or both on the log-scale.
+```{r}
+x = seq(1,10,by=1)
+plot(x,Power3(x,2), main = expression(f(x)==x^2),
+                    xlab = "x",
+                    ylab = "y",
+                    col = "blue")
+```
+
+#### (f) Create a function, PlotPower(), that allows you to create a plot of $x$ against $x^a$ for a fixed $a$ and for a range of values of x.
+```{r}
+PlotPower = function(x,a){
+  plot(x,Power3(x,a), main = mtext(bquote(f(x)==x^.(a))),
+                    xlab = "x",
+                    ylab = "y",
+                    col = "blue")
+}
+PlotPower(1:20,3)
+```
+
+### 13. Using the Boston data set, fit classification models in order to predict whether a given suburb has a crime rate above or below the median. Explore logistic regression, LDA, and KNN models using various subsets of the predictors. Describe your findings.
+```{r}
+library(MASS)
+
+#Turn crime rate into binary variable
+crim01_median = median(Boston$crim)
+Boston$crim01 = NA
+Boston[Boston$crim >= crim01_median,]$crim01 = 1
+Boston[Boston$crim < crim01_median,]$crim01 = 0
+```
+
+**Exploratory Data Analysis**
+```{r}
+#correlation plot
+M = cor(Boston[,2:15])
+corrplot(M)
+
+#boxplot against crim01
+par(mfrow=c(2,3))
+
+for (i in 2:7){
+  boxplot(Boston[,i] ~ Boston$crim01,
+          main = paste0(colnames(Boston)[i], " vs crim01"),
+          xlab = "crim01",
+          ylab = colnames(Boston)[i])
+}
+par(mfrow=c(2,3))
+for (i in 8:14){
+  boxplot(Boston[,i] ~ Boston$crim01,
+          main = paste0(colnames(Boston)[i], " vs crim01"),
+          xlab = "crim01",
+          ylab = colnames(Boston)[i])
+}
+
+#Create training and test set
+set.seed(1)
+train_boston = nrow(Boston)
+train_boston = Boston[sample(train_boston,size = train_boston*0.75, replace = FALSE),]
+test_boston = Boston[-as.numeric(rownames(train_boston)),]
+```
+
+**Logistic Regression**
+```{r}
+log_reg_bos = glm(crim01 ~ indus + nox + age + dis + rad + tax + lstat + black, family = "binomial", data = train_boston)
+log_reg_bos_full = glm(crim01 ~ ., family = "binomial", data = train_boston)
+stargazer(log_reg_bos_full)
+stargazer(log_reg_bos)
+
+#Out-of-sample testing
+log_reg_bos_pred = predict(log_reg_bos, newdata=test_boston, type="response")
+log_reg_bos_full_pred = predict(log_reg_bos_full, newdata=test_boston, type="response")
+
+log_reg_bos_full_pred[log_reg_bos_full_pred >= 0.5] = 1
+log_reg_bos_full_pred[log_reg_bos_full_pred < 0.5] = 0
+
+log_reg_bos_pred[log_reg_bos_pred >= 0.5] = 1
+log_reg_bos_pred[log_reg_bos_pred < 0.5] = 0
+
+cm1 = confusionMatrix(as.factor(log_reg_bos_full_pred), as.factor(test_boston$crim01), positive = "1")
+cm2 = confusionMatrix(as.factor(log_reg_bos_pred), as.factor(test_boston$crim01), positive = "1")
+```
+
+**LDA**
+```{r}
+lda_boston_full = lda(crim01 ~ ., data = train_boston)
+lda_boston = lda(crim01 ~ indus + nox + age + dis + rad + tax + lstat + black, data = train_boston)
+
+
+#Out-of-sample testing
+lda_bos_full_pred = predict(lda_boston_full, newdata=test_boston)$class
+lda_bos_pred = predict(lda_boston, newdata=test_boston)$class
+
+
+cm3 = confusionMatrix(as.factor(lda_bos_full_pred), as.factor(test_boston$crim01), positive = "1")
+cm4 = confusionMatrix(as.factor(lda_bos_pred), as.factor(test_boston$crim01), positive = "1")
+```
+
+**QDA**
+```{r}
+qda_boston = qda(crim01 ~ indus + nox + age + dis + rad + tax + lstat + black, data = train_boston)
+qda_boston_full = qda(crim01 ~ ., data = train_boston)
+
+#Out-of-sample testing
+qda_bos_pred = predict(qda_boston, newdata=test_boston)$class
+qda_bos_full_pred = predict(qda_boston_full, newdata=test_boston)$class
+
+cm5 = confusionMatrix(as.factor(qda_bos_full_pred ), as.factor(test_boston$crim01), positive = "1")
+cm6 = confusionMatrix(as.factor(qda_bos_pred), as.factor(test_boston$crim01), positive = "1")
+```
+
+**KNN**
+```{r}
+#KNN cross validation
+set.seed(1)
+trControl = trainControl(method  = "cv",
+                          number  = 5)
+
+train_boston$crim01 = as.factor(train_boston$crim01)
+
+train(crim01 ~ indus + nox + age + dis + rad + tax + lstat + black,
+      method     = "knn",
+      tuneGrid   = expand.grid(k = 1:20),
+      trControl  = trControl,
+      metric     = "Kappa",
+      data       = train_boston)
+
+```
+
+```{r}
+knn_boston_full = knn(train_boston[,c(-1,-15)],
+                 test_boston[,c(-1,-15)],
+                 train_boston$crim01, k = 3)
+
+knn_boston = knn(train_boston[,c("indus", "nox", "age", "dis", "rad", "tax", "lstat", "black")],
+                 test_boston[,c("indus", "nox", "age", "dis", "rad", "tax", "lstat", "black")],
+                 train_boston$crim01, k = 3)
+
+cm7 = confusionMatrix(knn_boston_full,  as.factor(test_boston$crim01), positive = "1")
+cm8 = confusionMatrix(knn_boston,  as.factor(test_boston$crim01), positive = "1")
+```
+
+```{r}
+Accuracy = c(cm1$overall[[1]],cm2$overall[[1]],
+             cm3$overall[[1]],cm4$overall[[1]],
+             cm5$overall[[1]],cm6$overall[[1]],
+             cm7$overall[[1]],cm8$overall[[1]])
+
+Sensitivity = c(cm1$byClass[[1]],cm2$byClass[[1]],
+                cm3$byClass[[1]],cm4$byClass[[1]],
+                cm5$byClass[[1]],cm6$byClass[[1]],
+                cm7$byClass[[1]],cm8$byClass[[1]])
+
+Specificity = c(cm1$byClass[[2]],cm2$byClass[[2]],
+                cm3$byClass[[2]],cm4$byClass[[2]],
+                cm5$byClass[[2]],cm6$byClass[[2]],
+                cm7$byClass[[2]],cm8$byClass[[2]])
+
+comparison = data.frame(Accuracy,Sensitivity,Specificity)
+rownames(comparison) = c("LogRegFull",
+                         "LogRegSelect",
+                         "LDAFull",
+                         "LDASelect",
+                         "QDAFull",
+                         "QDASelect",
+                         "KNNFull",
+                         "KNNSelect")
+knitr::kable(comparison, caption = "Comparison of Classification Models for Boston Housing Data")
+```
+
+A model with all predictors and a parsimonious model with selection of predictors were modeled using logistic regression, LDA, QDA, and KNN classifiers. The predictors for the parsimonious model were proportion of non-retail business acres per town, nitrogen oxides concentration, proportion of owner-occupied units built prior to 1940, weighted mean of distances to five Boston employment centers, index of accessibility to radial highways, full-value property-tax rate per $10,000, percent lower status of the population, and  proportion of blacks by town. These predictors were selected by visually inspecting which predictors were somewhat correlated with the the binary crime variable and exploring box plots for clear visual separation between the crime classes and each predictor.
+
+The full models for each method were on average 5 percent more accurate than smaller models. The best model for out-of-sample prediction was the full logistic regression model at 97.5 percent. KNN delivered the best smaller model at 89.7 percent. The QDA full model achieved 100 percent specificity and the logistic regression full model also had the highest sensitivity.
