@@ -1,0 +1,66 @@
+---
+title: "Chapter 5 Excercises"
+author: "Jonathan Bryan"
+date: "May 19, 2018"
+output: pdf_document
+---
+
+### 1. Using basic statistical properties of the variance, as well as singlevariable calculus, derive (5.6). In other words, prove that $\alpha$ given by (5.6) does indeed minimize $Var(\alpha X + (1 - \alpha)Y )$.
+$$
+\begin{aligned}
+\underset{\alpha}{\operatorname{argmin}}\; Var(\alpha X + (1 - \alpha)Y)&\\
+Var(\alpha X + (1 - \alpha)Y ) &= \alpha^2 Var(X) + (1 - \alpha)^2Var(Y) + 2\alpha(1-\alpha)Cov(X,Y))\\
+Var(\alpha X + (1 - \alpha)Y ) &= \alpha^2 \sigma_X^2 + (1 - 2\alpha + \alpha^2)\sigma_Y^2 + (2\alpha-2\alpha^2)\sigma_{XY}^2\\
+\frac{d}{d\alpha} Var(\alpha X + (1 - \alpha)Y ) &= 2\alpha \sigma_X^2 + (-2 + 2\alpha)\sigma_Y^2 + (2-4\alpha)\sigma_{XY}^2\\
+\frac{d}{d\alpha} Var(\alpha X + (1 - \alpha)Y ) &= 2\alpha \sigma_X^2 - 2\sigma_Y^2 + 2\alpha\sigma_Y^2 + 2\sigma_{XY}^2-4\alpha\sigma_{XY}^2\\
+2\alpha \sigma_X^2 - 2\sigma_Y^2 + 2\alpha\sigma_Y^2 + 2\sigma_{XY}^2-4\alpha\sigma_{XY}^2 &= 0\\
+2\alpha \sigma_X^2 + 2\alpha\sigma_Y^2 -4\alpha\sigma_{XY}^2 &= 2\sigma_Y^2 - 2\sigma_{XY}^2\\
+2\alpha (\sigma_X^2 + \sigma_Y^2 -2\sigma_{XY}^2) &= 2\sigma_Y^2 - 2\sigma_{XY}^2\\
+\alpha&= \frac{\sigma_Y^2 - \sigma_{XY}^2}{\sigma_X^2 + \sigma_Y^2 -2\sigma_{XY}^2}\\
+\end{aligned}
+$$
+
+### 2. We will now derive the probability that a given observation is part of a bootstrap sample. Suppose that we obtain a bootstrap sample from a set of n observations.
+
+#### (a) What is the probability that the first bootstrap observation is not the jth observation from the original sample? Justify your answer.
+$$Pr(B^1 \neq j) = \frac{n-1}{n}$$
+
+#### (b) What is the probability that the second bootstrap observation is not the jth observation from the original sample?
+$$Pr(B^2 \neq j) = \frac{n-1}{n}$$
+
+#### (c) Argue that the probability that the jth observation is not in the bootstrap sample is $(1 - 1/n)/^n$.
+$$Pr(B^1 \neq j,B^2 \neq j,...,B^n \neq j ) = \prod_{i = 1}^n\frac{n-1}{n} = \frac{n-1}{n}^n$$
+
+#### (d) When n = 5, what is the probability that the jth observation is in the bootstrap sample?
+$$Pr(j \in \bf{B} | n = 5) = 1 - \binom{5}{0} (1/5)^0 (4/5)^5 = 1 - .328 = .672$$
+
+#### (e) When n = 100, what is the probability that the jth observation is in the bootstrap sample?
+$$Pr(j \in \bf{B} | n = 100) = 1 -  (99/100)^{100} = 1 - .366 = .634$$
+
+#### (e) When n = 10, 000, what is the probability that the jth observation is in the bootstrap sample?
+$$Pr(j \in \bf{B} | n = 10000) = 1 -  (9999/10000)^{10000} = 1 - .367 = .632$$
+
+#### (g) Create a plot that displays, for each integer value of n from 1 to 100, 000, the probability that the jth observation is in the bootstrap sample. Comment on what you observe.
+```{r}
+x = seq(1,100000)
+y = 1 - ((x - 1)/x)^x
+plot(x,y, main = "Probability of jth Observation in Bootstrap",
+          xlab = "n",
+          ylab = expression(1 - ((x - 1)/x)^x))
+```
+
+The probability that the jth observation is in the bootstrap approaches $\approx \frac{2}{3}$ as n increaes. 
+
+#### (h) We will now investigate numerically the probability that a bootstrap sample of size n = 100 contains the jth observation. Here j = 4. We repeatedly create bootstrap samples, and each time we record whether or not the fourth observation is contained in the bootstrap sample.
+```{r}
+store = rep(NA, 10000)
+for(i in 1:10000){
+  store[i] = sum(sample(1:100, rep=TRUE) ==4) > 0
+}
+mean(store)
+```
+On average the probability that the jth observation is in the bootstrap sample is .64,
+
+### 3. We now review k-fold cross-validation.
+
+#### (a) Explain how k-fold cross-validation is implemented.
