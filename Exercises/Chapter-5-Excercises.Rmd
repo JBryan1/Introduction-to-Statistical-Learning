@@ -152,3 +152,109 @@ Using a student dummy variable lowered the validation set misclassification rate
 
 ### 6. We continue to consider the use of a logistic regression model to predict the probability of default using income and balance on the Default data set. In particular, we will now compute estimates for the standard errors of the income and balance logistic regression coefficients in two different ways: (1) using the bootstrap, and (2) using the standard formula for computing the standard errors in the glm() function. Do not forget to set a random seed before beginning your analysis.
 
+#### (a) Using the summary() and glm() functions, determine the estimated standard errors for the coefficients associated with income and balance in a multiple logistic regression model that uses both predictors.
+```{r}
+lr5 = glm( as.numeric(default) - 1 ~ income + balance, family = "binomial", data = Default)
+stargazer::stargazer(lr5)
+```
+
+#### (b) Write a function, boot.fn(), that takes as input the Default data set as well as an index of the observations, and that outputs the coefficient estimates for income and balance in the multiple logistic regression model.
+```{r}
+boot.fn = function(data, index){
+  lr.boot = glm( as.numeric(default) - 1 ~ income + balance, family = "binomial", data = Default, subset = index)
+  coef.est = summary(lr.boot)$coefficients[2:3,1]
+  coef.est
+}
+```
+
+#### (c) Use the boot() function together with your boot.fn() function to estimate the standard errors of the logistic regression coefficients for income and balance.
+```{r}
+library(boot)
+set.seed(1)
+boot.se = boot(data = Default, statistic = boot.fn, R = 100)
+boot.se
+```
+
+
+#### (d) Comment on the estimated standard errors obtained using the glm() function and using your bootstrap function.
+When using the glm() function, the estimated standard errors for income and balance are 4.99e-06 and 2.26e-04 respectively. The bootstrap estimated standard errors for income and balance are 4.13e-06 and 2.11e-04 respectively. Both of the boostrap estimates are lower than the estimates from part (a), suggesting a deviation from the hypothesized linear relationship between the predictors and the responses, as the estimated variance using the glm() is likely overinflated.
+
+### 7. In Sections 5.3.2 and 5.3.3, we saw that the cv.glm() function can be used in order to compute the LOOCV test error estimate. Alternatively, one could compute those quantities using just the glm() and predict.glm() functions, and a for loop. You will now take this approach in order to compute the LOOCV error for a simple logistic regression model on the Weekly data set. Recall that in the context of classification problems, the LOOCV error is given in (5.4).
+
+#### (a) Fit a logistic regression model that predicts Direction using Lag1 and Lag2.
+```{r}
+lr6 = glm(as.numeric(Direction) - 1 ~ Lag1 + Lag2, family = "binomial", data = Weekly)
+```
+
+
+#### (b) Fit a logistic regression model that predicts Direction using Lag1 and Lag2 using all but the first observation.
+```{r}
+lr7 = glm(as.numeric(Direction) - 1 ~ Lag1 + Lag2, family = "binomial", data = Weekly[-1,])
+```
+
+#### (c) Use the model from (b) to predict the direction of the first observation. You can do this by predicting that the first observation will go up if $P(Direction="Up"|Lag1, Lag2) > 0.5$. Was this observation correctly classified?
+```{r}
+lr7.pred = predict(lr7, newdata = Weekly[1,], type = "response")
+lr7.pred[lr7.pred > 0.5] = 1
+lr7.pred[lr7.pred <= 0] = 0
+lr7.pred == as.numeric(Weekly[1,"Direction"]) - 1
+```
+
+The observation's predicted response was incorrectly classified as default.
+
+#### (d) Write a for loop from i = 1 to i = n, where n is the number of observations in the data set, that performs each of the following steps:
+
+##### i. Fit a logistic regression model using all but the ith observation to predict Direction using Lag1 and Lag2.
+##### ii. Compute the posterior probability of the market moving up for the ith observation.
+##### iii. Use the posterior probability for the ith observation in order to predict whether or not the market moves up.
+##### iv. Determine whether or not an error was made in predicting the direction for the ith observation. If an error was made, then indicate this as a 1, and otherwise indicate it as a 0.
+```{r}
+error = rep(NA,nrow(Weekly))
+test = rep(NA,nrow(Weekly))
+for (i in 1:nrow(Weekly)){
+  lr.boot = glm(as.numeric(Direction) - 1 ~ Lag1 + Lag2, family="binomial", data = Weekly[-i,])
+  lr.boot.pred = predict(lr.boot, newdata = Weekly[i,], type = "response")
+  lr.boot.pred[lr.boot.pred > 0.5] = 1
+  lr.boot.pred[lr.boot.pred <= 0.5] = 0
+  error[i] = lr.boot.pred == as.numeric(Weekly[i,"Direction"])-1
+}
+```
+
+### (e) Take the average of the n numbers obtained in (d)iv in order to obtain the LOOCV estimate for the test error. Comment on the results.
+```{r}
+1 - mean(error)
+```
+The LOOCV estimate for the test error is approximately 45%.
+
+## 8. We will now perform cross-validation on a simulated data set.
+
+### (a) Generate a simulated data set as follows:
+```{r}
+set.seed (1)
+y=rnorm(100)
+x=rnorm(100)
+y=x-2* x^2+ rnorm (100)
+```
+### In this data set, what is n and what is p? Write out the model used to generate the data in equation form.
+In this model there are 100 simulated observations and two predictors, therefore, $n = 100$ and $p = 2$. The model is $Y = X - 2X^2 + \epsilon, \; \epsilon \sim N(0,1)$.
+
+### (b) Create a scatterplot of X against Y . Comment on what you find.
+```{r}
+plot(x,y, main = "X and Y Scatterplot")
+```
+There is a quadratic relationship with X and Y.
+
+### (c) Set a random seed, and then compute the LOOCV errors that result from fitting the following four models using least squares:
+```{r}
+set.seed(2)
+sim_df = data.frame(y = y, x=x)
+i = cv.glm(glmfit = glm(y ~ x), data = sim_df)$delta[1]
+ii = cv.glm(glmfit = glm(y ~ poly(x,2)), data = sim_df)$delta[1]
+iii = cv.glm(glmfit = glm(y ~ poly(x,3)), data = sim_df)$delta[1]
+iv = cv.glm(glmfit = glm(y ~ poly(x,4)), data = sim_df)$delta[1]
+
+table = round(data.frame(i = i, ii = ii, iii = iii, iv= iv),3)
+knitr::kable(table, caption = "Comparison of Models for LOOCV")
+```
+
+
