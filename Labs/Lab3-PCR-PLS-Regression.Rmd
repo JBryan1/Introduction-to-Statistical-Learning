@@ -1,0 +1,72 @@
+---
+title: 'Lab 3: PCR and PLS Regression'
+author: "Jonathan Bryan"
+date: "June 2, 2018"
+output: pdf_document
+---
+### 6.7.1 Components Regression
+```{r message=FALSE}
+library(ISLR)
+library(pls)
+
+#remove observations with missing data
+Hitters = na.omit(Hitters)
+
+#PCR regression and k-fold cross-validation
+set.seed(2)
+pcr.fit=pcr(Salary ~ ., data=Hitters, scale = TRUE, validation ="CV")
+summary(pcr.fit)
+```
+
+```{r}
+validationplot(pcr.fit,val.type="MSEP")
+```
+
+
+
+```{r}
+#set up training and test sets
+set.seed(1)
+x=model.matrix (Salary~.,Hitters )[,-1]
+y=Hitters$Salary
+train = sample(1:nrow(Hitters), size = nrow(Hitters)/2)
+test = (-train)
+y.test = y[test]
+
+#PCR validation on test set
+pcr.fit = pcr(Salary~., data=Hitters, 
+                        subset = train, 
+                        scale = TRUE, 
+                        validation = "CV")
+validationplot(pcr.fit,val.type="MSEP")
+pcr.pred=predict(pcr.fit,x[test,], ncomp=7)
+mean((pcr.pred-y.test)^2)
+```
+
+```{r}
+#PCR regression on full dataset
+pcr.fit = pcr(y~x, scale = TRUE, ncomp =7)
+summary(pcr.fit)
+```
+
+### 6.7.2 Partial Least Squares
+```{r}
+#cross-validated PLS regression
+set.seed(1)
+pls.fit = plsr(Salary ~., data = Hitters, 
+                          subset = train, 
+                          scale = TRUE,
+                          validation = "CV")
+summary(pls.fit)
+```
+
+```{r}
+#PLS regression using only two components
+pls.pred = predict(pls.fit,x[test,], ncomp=2)
+mean((pls.pred-y.test)^2)
+```
+
+```{r}
+pls.fit = plsr(Salary ~., data=Hitters, scale=TRUE, ncomp=2)
+summary(pls.fit)
+```
