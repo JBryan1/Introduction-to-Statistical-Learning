@@ -1,5 +1,5 @@
 ---
-title: "Chapter 5 Excercises"
+title: "Chapter 5 Exercises"
 author: "Jonathan Bryan"
 date: "May 19, 2018"
 output:

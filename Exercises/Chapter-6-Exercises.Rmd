@@ -1,0 +1,95 @@
+---
+title: "Chapter 6 Exercises"
+author: "Jonathan Bryan"
+date: "June 3, 2018"
+output: pdf_document
+---
+```{r echo = FALSE}
+knitr::opts_chunk$set(fig.width=8, fig.height=5) 
+```
+### 1. We perform best subset, forward stepwise, and backward stepwise selection on a single data set. For each approach, we obtain $p + 1$ models, containing $0, 1, 2, . . . , p$ predictors. Explain your answers:
+
+#### (a) Which of the three models with k predictors has the smallest training RSS?
+Best subset selection does an exhaustive search of the model space and therefore will always find the model with the lowest training RSS.
+
+#### (b) Which of the three models with k predictors has the smallest test RSS?
+This depends on whether a validation set or cross-validation was used to evaluate the model selection procedures. If a validation set of cross-validation is not used then either forward or backward stepwise selection are likely to have the lowest test RSS because the best subset model will likely be overfit.
+
+#### (c) True or False:
+
+##### i. The predictors in the k-variable model identified by forward stepwise are a subset of the predictors in the (k+1)-variable model identified by forward stepwise selection.
+True.
+
+##### ii. The predictors in the k-variable model identified by backward stepwise are a subset of the predictors in the (k + 1)- variable model identified by backward stepwise selection.
+True
+
+##### iii. The predictors in the k-variable model identified by backward stepwise are a subset of the predictors in the (k + 1)- variable model identified by forward stepwise selection.
+False.
+
+##### iv. The predictors in the k-variable model identified by forward stepwise are a subset of the predictors in the (k+1)-variable model identified by backward stepwise selection.
+False.
+
+##### v. The predictors in the k-variable model identified by best subset are a subset of the predictors in the (k + 1)-variable model identified by best subset selection.
+False.
+
+### 2. For parts (a) through (c), indicate which of i. through iv. is correct. Justify your answer.
+
+#### (a) The lasso, relative to least squares, is:
+
+iii is correct. Lasso regression constrains the objective function to include an $L_1$ penalty. This penalty shrinks, and forces some, coefficients toward zero. This increases the bias of the model while lowering the variance.
+
+#### (b) Repeat (a) for ridge regression relative to least squares.
+
+iii is correct. Ridge regression constrains the objective function to include an $L_2$ penalty. This shrinks the coefficients toward zero and increases the bias of the model while lowering the variance.
+
+#### (c) Repeat (a) for non-linear methods relative to least squares.
+
+ii is correct. Non-linear methods have fewer assumptions regarding the underlying relationship between the response and predictors. This decreases the bias of such methods but makes them more variable because the prediction model is more contingent on the data used to train the model.
+
+### 3. Suppose we estimate the regression coefficients in a linear regression model by minimizing
+$$\Sigma_{i=1}^n (y_i - \beta_0 - \Sigma_{j=1}^p\beta_jx_{ij})^2 \; \; \text{subject to} \; \; \Sigma_{j=1}^p |\beta_j| \leq s$$
+### for a particular value of s. For parts (a) through (e), indicate which of i. through v. is correct. Justify your answer.
+
+#### (a) As we increase s from 0, the training RSS will:
+
+iv. is correct. As s increases, this reduces the constraint on the $\beta$ coefficients. At the upper limit of s, we recover the OLS solution which is the most flexible solution compared to lower values of s.
+
+#### (b) Repeat (a) for test RSS.
+
+ii. is correct. At some value of s between 0 and $\infty$ the lasso regression model will find an optimal penalty for out-of-sample testing. As s increases the variance of the model will increase as the bias decreases. At some point, the rate of reduction in bias will overtake the increases in variance and the test RSS decreases. Eventually the rate of increase in variance will overtake the reduction in bias, increasing the test RSS as s approaches infinity.
+
+#### (c) Repeat (a) for variance.
+
+iii. is correct. As s increases the variance of the model increases while the bias lowers until the OLS solution is recovered.
+
+#### (d) Repeat (a) for (squared) bias.
+
+iv. is correct. As s increases the bias of the model lowers until the unbiased OLS solution is recovered.
+
+#### (e) Repeat (a) for the irreducible error.
+
+v. is correct. Irreducible error is not a function of the model and remains constant.
+
+### 4. Suppose we estimate the regression coefficients in a linear regression model by minimizing
+$$\Sigma_{i=1}^n (y_i - \beta_0 - \Sigma_{j=1}^p\beta_jx_{ij})^2 + \;\lambda\Sigma_{j=1}^p \beta_j^2$$
+### for a particular value of \lambda. For parts (a) through (e), indicate which of i. through v. is correct. Justify your answer.
+
+#### (a) As we increase $\lambda$ from 0, the training RSS will:
+
+iii is correct. Increasing $\lambda$ increases the $L_2$ penalty and shrinks the coefficients toward zero, increasing the bias of the model. At zero, the ridge regression model is the OLS solution which is the more flexible than the ridge regression with a nonzero $\lambda$ and fits the training data the best.
+
+#### (b) Repeat (a) for test RSS.
+
+ii. is correct. At some value of $\lambda$ between 0 and $\infty$ the ridge regression model will find an optimal penalty for out-of-sample testing. Initially the variance of the model will decrease faster than the increase in bias but eventually the rate of increase in bias will overtake the reduction in variance, increasing the test RSS as $\lambda$ approaches infinity.
+
+#### (c) Repeat (a) for variance.
+
+iv. is correct. The variance of the model will steadily decrease as the ridge penalty further constrains the model and increases the bias.
+
+#### (d) Repeat (a) for (squared) bias.
+
+iii. is correct. The bias of the model will steadily increase as the coefficients are further constrained by the increasing $L_2$ penalty.
+
+#### (e) Repeat (a) for the irreducible error.
+
+v. is correct. Irreducible error is not a function of the model and remains constant.
