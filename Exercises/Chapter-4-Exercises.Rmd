@@ -1,9 +1,12 @@
 ---
-title: "Chapter 4 Excercises"
+title: "ISL Chapter 4 Excercises"
 author: "Jonathan Bryan"
 date: "April 20, 2018"
 output: pdf_document
 ---
+```{r echo = FALSE}
+knitr::opts_chunk$set(fig.width=8, fig.height=5) 
+```
 
 ### 1. Using a little bit of algebra, prove that (4.2) is equivalent to (4.3). In other words, the logistic function representation and logit representation for the logistic regression model are equivalent.
 
@@ -22,7 +25,7 @@ Given $X \sim N(\mu_k, \sigma^2)$ and that $log()$ is a monotonically increase f
 $$\forall x,y,\; x \leq y,\; log(x) < log(y)$$
 We can conclude that, $arg_X \;max\; p_k(X) =  arg_X \;max\; log(p_k(X))$
 
-### 3. This problem relates to the QDA model, in which the observations within each class are drawn from a normal distribution with a class specific mean vector and a class specific covariance matrix. We consider the simple case where p = 1; i.e. there is only one feature. Suppose that we have K classes, and that if an observation belongs to the kth class then X comes from a one-dimensional normal distribution, $X \sim N(\mu_k, \sigma_k^2). Recall that the density function for the one-dimensional normal distribution is given in (4.11). Prove that in this case, the Bayes' classifier is not linear. Argue that it is in fact quadratic.
+### 3. This problem relates to the QDA model, in which the observations within each class are drawn from a normal distribution with a class specific mean vector and a class specific covariance matrix. We consider the simple case where p = 1; i.e. there is only one feature. Suppose that we have K classes, and that if an observation belongs to the kth class then X comes from a one-dimensional normal distribution, $X \sim N(\mu_k, \sigma_k^2)$. Recall that the density function for the one-dimensional normal distribution is given in (4.11). Prove that in this case, the Bayes' classifier is not linear. Argue that it is in fact quadratic.
 
 $$\begin{aligned}
 p_k(X) &= \frac{1}{\sqrt{2\pi}\sigma_k}e^{-\frac{1}{2\sigma_k^2}(x - \mu_k)^2}\pi_k\\

@@ -1,11 +1,14 @@
 ---
-title: "Chapter-2-Exercises"
+title: "ISL Chapter 2 Exercises"
 author: "Jonathan Bryan"
 date: "May 7, 2017"
 output:
   pdf_document: default
   html_document: default
 ---
+```{r echo = FALSE}
+knitr::opts_chunk$set(fig.width=8, fig.height=5) 
+```
 
 ### 1. For each of parts (a) through (d), indicate whether we would generally expect the performance of a flexible statistical learning method to be better or worse than an inflexible method. Justify your answer.
 

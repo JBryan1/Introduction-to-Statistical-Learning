@@ -1,8 +1,10 @@
 ---
-title: "Chapter 6 Exercises"
+title: "ISL Chapter 6 Exercises"
 author: "Jonathan Bryan"
 date: "June 3, 2018"
-output: pdf_document
+output:
+  pdf_document: default
+  word_document: default
 ---
 ```{r echo = FALSE}
 knitr::opts_chunk$set(fig.width=8, fig.height=5) 
@@ -48,6 +50,7 @@ ii is correct. Non-linear methods have fewer assumptions regarding the underlyin
 
 ### 3. Suppose we estimate the regression coefficients in a linear regression model by minimizing
 $$\Sigma_{i=1}^n (y_i - \beta_0 - \Sigma_{j=1}^p\beta_jx_{ij})^2 \; \; \text{subject to} \; \; \Sigma_{j=1}^p |\beta_j| \leq s$$
+
 ### for a particular value of s. For parts (a) through (e), indicate which of i. through v. is correct. Justify your answer.
 
 #### (a) As we increase s from 0, the training RSS will:
@@ -72,7 +75,8 @@ v. is correct. Irreducible error is not a function of the model and remains cons
 
 ### 4. Suppose we estimate the regression coefficients in a linear regression model by minimizing
 $$\Sigma_{i=1}^n (y_i - \beta_0 - \Sigma_{j=1}^p\beta_jx_{ij})^2 + \;\lambda\Sigma_{j=1}^p \beta_j^2$$
-### for a particular value of \lambda. For parts (a) through (e), indicate which of i. through v. is correct. Justify your answer.
+
+### for a particular value of $\lambda$. For parts (a) through (e), indicate which of i. through v. is correct. Justify your answer.
 
 #### (a) As we increase $\lambda$ from 0, the training RSS will:
 
@@ -105,6 +109,7 @@ $$
 &arg\; \underset{\beta}{min}\;(\hat{\beta_1}x_1 + \hat{\beta_2}x_1  - y_1)^2 + (\hat{\beta_1}x_2 + \hat{\beta_2}x_2 - y_2)^2 + \lambda(\beta_1^2 + \beta_2^2)\\
 \end{aligned}
 $$
+
 #### (b) Argue that in this setting, the ridge coefficient estimates satisfy $\hat{\beta_1} = \hat{\beta_2}$.
 $$
 \begin{aligned}
@@ -130,6 +135,7 @@ $$
 &arg\; \underset{\beta}{min}\;(\hat{\beta_1}x_1 + \hat{\beta_2}x_1  - y_1)^2 + (\hat{\beta_1}x_2 + \hat{\beta_2}x_2 - y_2)^2 + \lambda(|\beta_1| + |\beta_2|)\\
 \end{aligned}
 $$
+
 #### (d) Argue that in this setting, the lasso coefficients $\hat{\beta_1}$ and $\hat{\beta_2}$ are not unique-in other words, there are many possible solutions to the optimization problem in (c). Describe these solutions.
 $$
 \begin{aligned}
@@ -148,6 +154,473 @@ $$
 
 This demonstrates that $\hat{\beta_1}$ and $\hat{\beta_2}$ can be any real number other than $0$ and that there is no unique solution.
 
+### 6. We will now explore (6.12) and (6.13) further.
+
+#### (a) Consider (6.12) with p = 1. For some choice of $y_1$ and $\lambda > 0$, plot (6.12) as a function of $\beta_1$. Your plot should confirm that (6.12) is solved by (6.14).
+```{r warning=FALSE}
+library(latex2exp)
+y1 = 10
+lambda = 2
+beta = seq(1,20, by=1)
+ridge = (10 - beta)^2 + 2*beta^2
+plot(beta, ridge, main = "Ridge Regression",
+     ylab = latex2exp("$(10 - \\beta_j)^2 + 2\\beta^2$"),
+     xlab = latex2exp("$\\beta$"),
+     type ="l",
+     lwd=2)
+abline(v=10/(1+2), col="red",lwd=2)
+legend(10,800,legend = c("Ridge", "x = 10/3"),
+                  col = c("red", "blue"),lty=1)
+```
 
 
+#### (b) Consider (6.13) with p = 1. For some choice of$y_1$ and $\lambda > 0$, plot (6.13) as a function of $\beta_1$. Your plot should confirm that (6.13) is solved by (6.15).
+```{r warning=FALSE}
+y1 = 10
+lambda = 2
+beta = seq(1,20, by=1)
+lasso = (10 - beta)^2 + 2*abs(beta)
+plot(beta, lasso, main = "Lasso Regression",
+     ylab = latex2exp("$(10 - \\beta_j)^2 + 2| \\beta |$"),
+     xlab = latex2exp("$\\beta$"),
+     type ="l",
+     lwd=2)
+abline(v=10 - 1, col="red",lwd=2)
+legend(3,140,legend = c("Lasso", "x = 9"),
+                  col = c("red", "blue"),lty=1)
+```
 
+### 7. We will now derive the Bayesian connection to the lasso and ridge regression discussed in Section 6.2.2.
+
+#### (a) Suppose that $y_i = \beta_0 + \Sigma_{j=1}^p x_{ij}\beta_j + \epsilon_i$ where $\epsilon_1,...,\epsilon_n$ are independent and identically distributed from a $N(0,\sigma^2)$ distribution. Write out the likelihood for the data.
+$$
+\begin{aligned}
+y_i &\sim N(\beta_0 + \Sigma_{j=1}^p x_{ij}\beta_j,\; \sigma^2)\\
+Pr(y_1,...,y_n | x, \beta, \sigma^2) &= \prod_{i=1}^n\frac{1}{\sqrt{2\pi\sigma^2}}exp\{-\frac{1}{2\sigma^2}(y_i - \beta_0 + \Sigma_{j=1}^p x_{ij}\beta_j)^2\}\\
+Pr(y_1,...,y_n | x, \beta, \sigma^2) &= \frac{1}{\sqrt{2\pi\sigma^2}}^nexp\{-\frac{1}{2\sigma^2} \Sigma_{i=1}^n(y_i - \beta_0 + \Sigma_{j=1}^p x_{ij}\beta_j)^2\}
+\end{aligned}
+$$
+
+#### (b) Assume the following prior for $\beta:\;\; \beta_1,...,\beta_p$ are independent and identically distributed according to a double-exponential distribution with mean $0$ and common scale parameter $b$: i.e. $p(\beta)=\frac{1}{2b}exp(-\frac{|\beta|}{b})$.
+$$
+\begin{aligned}
+Pr(\beta | (y_1,...,y_n, x, \sigma^2) &= \frac{Pr(y_1,...,y_n | x, \beta, \sigma^2) Pr(\beta)}{\int_{y \in Y}Pr(y_1,...,y_n | x, \beta, \sigma^2) Pr(\beta) dy}\\
+Pr(\beta | (y_1,...,y_n, x, \sigma^2) &\propto \frac{1}{\sqrt{2\pi\sigma^2}}^n \frac{1}{2b}exp\{-\frac{1}{2\sigma^2} \Sigma_{i=1}^n(y_i - \beta_0 + \Sigma_{j=1}^p x_{ij}\beta_j)^2\} exp\{-\frac{|\Sigma_{j=0}^p\beta_j|}{b}\}\\
+Pr(\beta | (y_1,...,y_n, x, \sigma^2) &\propto \frac{1}{\sqrt{2\pi\sigma^2}}^n \frac{1}{2b}exp\{-\frac{1}{2\sigma^2}( \Sigma_{i=1}^n(y_i - \beta_0 + \Sigma_{j=1}^p x_{ij}\beta_j)^2 +\frac{2\sigma^2|\Sigma_{j=0}^p\beta_j|}{b})\}\\
+\end{aligned}
+$$
+
+#### (c) Argue that the lasso estimate is the mode for $\beta$ under this posterior distribution.
+$$
+\begin{aligned}
+arg \;\underset{\beta}{max} \;Pr(\beta | (y_1,...,y_n, x, \sigma^2) &= arg \;\underset{\beta}{max} \frac{1}{\sqrt{2\pi\sigma^2}}^n \frac{1}{2b} exp\{-\frac{1}{2\sigma^2}( \Sigma_{i=1}^n(y_i - \beta_0 + \Sigma_{j=1}^p x_{ij}\beta_j)^2 +\frac{2\sigma^2 |\Sigma_{j=0}^p\beta_j|}{b}) \}\\
+arg \;\underset{\beta}{max} \;Pr(\beta | (y_1,...,y_n, x, \sigma^2) &= arg \;\underset{\beta}{min}\; log(exp\{-\frac{1}{2\sigma^2}( \Sigma_{i=1}^n(y_i - \beta_0 + \Sigma_{j=1}^p x_{ij}\beta_j)^2 +\frac{2\sigma^2|\Sigma_{j=0}^p\beta_j|}{b})\})\\
+arg \;\underset{\beta}{max} \;Pr(\beta | (y_1,...,y_n, x, \sigma^2) &= arg \;\underset{\beta}{min}\; \Sigma_{i=1}^n(y_i - \beta_0 + \Sigma_{j=1}^p x_{ij}\beta_j)^2 +\frac{2\sigma^2|\Sigma_{j=0}^p\beta_j|}{b}\\
+\lambda &= \frac{2\sigma^2}{b}\\
+Pr(\beta | (y_1,...,y_n, x, \sigma^2) &= arg \;\underset{\beta}{min}\; \Sigma_{i=1}^n(y_i - \beta_0 + \Sigma_{j=1}^p x_{ij}\beta_j)^2 +\lambda|\Sigma_{j=0}^p\beta_j|\; \text{(Lasso optimization)}\\
+\end{aligned}
+$$
+
+#### (d) Now assume the following prior for $\beta:\;\; \beta_1,...,\beta_p$ are independent and identically distributed according to a normal distribution with mean zero and variance c. Write out the posterior for $\beta$ in this setting.
+$$
+\begin{aligned}
+Pr(\beta | (y_1,...,y_n, x, \sigma^2) &= \frac{Pr(y_1,...,y_n | x, \beta, \sigma^2) Pr(\beta)}{\int_{y \in Y}Pr(y_1,...,y_n | x, \beta, \sigma^2) Pr(\beta) dy}\\
+Pr(\beta | (y_1,...,y_n, x, \sigma^2) &\propto \frac{1}{\sqrt{2\pi\sigma^2}}^n \frac{1}{\sqrt{2\pi c^2}}exp\{-\frac{1}{2\sigma^2}( \Sigma_{i=1}^n(y_i - \beta_0 + \Sigma_{j=1}^p x_{ij}\beta_j)^2\} exp\{-\frac{1}{2c^2}\Sigma_{j=0}^p\beta_j^2\}\\
+Pr(\beta | (y_1,...,y_n, x, \sigma^2) &\propto \frac{1}{\sqrt{2\pi\sigma^2}}^n \frac{1}{\sqrt{2\pi c^2}}exp\{-\frac{1}{2\sigma^2}( \Sigma_{i=1}^n(y_i - \beta_0 + \Sigma_{j=1}^p x_{ij}\beta_j)^2 +\frac{\sigma^2}{c^2}\Sigma_{j=0}^p\beta_j^2)\}\\
+\end{aligned}
+$$
+
+#### (e) Argue that the ridge regression estimate is both the mode and the mean for $\beta$ under this posterior distribution.
+$$
+\begin{aligned}
+arg \;\underset{\beta}{max} \;Pr(\beta | (y_1,...,y_n, x, \sigma^2) &= arg \;\underset{\beta}{max} \frac{1}{\sqrt{2\pi\sigma^2}}^n \frac{1}{\sqrt{2\pi c^2}}exp\{-\frac{1}{2\sigma^2} (\Sigma_{i=1}^n(y_i - \beta_0 + \Sigma_{j=1}^p x_{ij}\beta_j)^2 +\frac{\sigma^2}{c^2}\Sigma_{j=0}^p\beta_j^2)\}\\
+arg \;\underset{\beta}{max} \;Pr(\beta | (y_1,...,y_n, x, \sigma^2) &= arg \;\underset{\beta}{min}\; log(exp\{-\frac{1}{2\sigma^2} (\Sigma_{i=1}^n(y_i - \beta_0 + \Sigma_{j=1}^p x_{ij}\beta_j)^2 +\frac{\sigma^2}{c^2}\Sigma_{j=0}^p\beta_j^2)\})\\
+arg \;\underset{\beta}{max} \;Pr(\beta | (y_1,...,y_n, x, \sigma^2) &= arg \;\underset{\beta}{min}\; \Sigma_{i=1}^n(y_i - \beta_0 + \Sigma_{j=1}^p x_{ij}\beta_j)^2 +\frac{\sigma^2}{c^2}\Sigma_{j=0}^p\beta_j^2)\\
+\lambda &= \frac{\sigma^2}{c^2}\\
+Pr(\beta | (y_1,...,y_n, x, \sigma^2) &= arg \;\underset{\beta}{min}\; \Sigma_{i=1}^n(y_i - \beta_0 + \Sigma_{j=1}^p x_{ij}\beta_j)^2 +\lambda\Sigma_{j=0}^p\beta_j^2\; \text{(Ridge optimization)}\\
+\end{aligned}
+$$
+
+### 8. In this exercise, we will generate simulated data, and will then use this data to perform best subset selection.
+
+####(a) Use the rnorm() function to generate a predictor $X$ of length $n = 100$, as well as a noise vector $\epsilon$ of length $n = 100$.
+```{r}
+set.seed(1)
+X = rnorm(100) #mean=3 and sd=3 
+e = rnorm(100) #mean=0 and sd =1
+```
+
+#### (b) Generate a response vector $Y$ of length $n = 100$ according to the model
+$$Y = \beta_0 + \beta_1X + \beta_2X^2 + \beta_3X^3 + \epsilon$$
+
+where $\beta_0, \beta_1, \beta_2,$ and $\beta_3$ are constants of your choice.
+```{r}
+y = rep(NA,100)
+for (i in 1:100){
+  y[i] = 4 -1*X[i] + 5*X[i]^2 - 3.5*X[i]^3 + e[i] 
+}
+```
+
+####(c) Use the regsubsets() function to perform best subset selection in order to choose the best model containing the predictors $X,X^2,...,X^10$. What is the best model obtained according to $C_p$, $BIC$, and adjusted $R^2$? Show some plots to provide evidence for your answer, and report the coefficients of the best model obtained. Note you will need to use the data.frame() function to create a single data set containing both $X$ and $Y$ .
+```{r}
+library(leaps)
+df = data.frame(X=X,y=y)
+bestsub = regsubsets(y ~ poly(X,10, raw=TRUE), data =df, nvmax=10)
+plot(bestsub, scale=c("Cp"), main ="Best Subset Mallow's Cp")
+plot(bestsub, scale=c("bic"), main ="Best Subset BIC")
+plot(bestsub, scale=c("adjr2"), main ="Best Subset Adjusted R-squared")
+bestsub_coef = coefficients(bestsub, id=3) - c(4,-1,5,-3.5)
+bestsub_coef
+```
+
+The best model is the four variable five-degree polynomial model exluding the quartic term as determined by the lowest values of Mallow's $C_p$. Nine of the models, including the true model, are indistinguishable using adjusted $R^2$. The third-degree polynomial model and the previously specified model best model selected by Mallow's $C_p$ have equal $BIC$. The coefficients for the third-degree polynomial model are approximate to the true model coefficients.
+
+#### (d) Repeat (c), using forward stepwise selection and also using backwards stepwise selection. How does your answer compare to the results in (c)?
+```{r}
+#forward stepwise selection
+forward = regsubsets(y ~ poly(X,10, raw=TRUE), data =df, method="forward", nvmax=10)
+plot(forward , scale=c("Cp"), main ="Forward Stepwise Mallow's Cp")
+plot(forward , scale=c("bic"), main ="Forward Stepwise BIC")
+plot(forward , scale=c("adjr2"), main ="Forward Stepwise Adjusted R-squared")
+forward_coef =coefficients(forward, id=3) - c(4,-1,5,-3.5)
+
+#backward stepwise selection
+backward = regsubsets(y ~ poly(X,10, raw=TRUE), data =df, method="backward", nvmax=10)
+plot(backward, scale=c("Cp"), main ="Backward Stepwise Mallow's Cp")
+plot(backward, scale=c("bic"), main ="Backward Stepwise BIC")
+plot(backward, scale=c("adjr2"), main ="Backward Stepwise Adjusted R-squared")
+backward_coef = coefficients(backward, id=3) - c(4,-1,5,-3.5)
+
+#coefficient table
+regselect_coefs = data.frame("Best Subset" = bestsub_coef,
+                             "Forward Stepwise" = forward_coef,
+                             "Backward Stepwise" = backward_coef)
+knitr::kable(regselect_coefs, caption ="Selection Method Coef. Difference Comparison")
+```
+
+A similar pattern to the best subset results is observed in the forward stepwise approaches. However, the backwards stepwise approach no longer has the true model tied for second when evaluating Mallow's $C_p$ and instead is solidily the second best model. This is a marginal improvement over the best subset and forward stepwise search performance as determined by Mallow's $C_p$. The coefficients for all model selection methods appear identical.
+
+#### (e) Now fit a lasso model to the simulated data, again using $X,X^2,. . . , X^{10}$ as predictors. Use cross-validation to select the optimal value of $\lambda$. Create plots of the cross-validation error as a function of $\lambda$. Report the resulting coefficient estimates, and discuss the results obtained.
+```{r, message=FALSE}
+library(glmnet)
+set.seed(1)
+X.model.matrix = model.matrix(y ~ poly(X,10, raw = TRUE))[,-1]
+lasso.cv = cv.glmnet(X.model.matrix,y)
+plot(lasso.cv)
+optimal.lambda = lasso.cv$lambda.min
+print(paste0("The optimal lambda value is ", round(optimal.lambda,3)))
+lasso.fit = glmnet(X.model.matrix,y,alpha = optimal.lambda)
+predict(lasso.fit, type="coefficients", s=optimal.lambda)
+```
+
+The optimal $\lambda$ is 0.053. Using $\lambda = 0.053$, we obtain coefficient estimates approximate to the true cubic model. The lasso, however, does retain small coefficient values for the 4th-,6th-, and 8th-degreee polynomial terms. 
+
+#### (f) Now generate a response vector Y according to the model $Y = \beta_0 + \beta_7X^7 + \epsilon$ and perform best subset selection and the lasso. Discuss the results obtained.
+```{r}
+y2 = 5 + -3*X^7 + e
+df2 = data.frame(X,y2)
+#best subset
+bestsub2 = regsubsets(y2 ~ poly(X,10,raw=TRUE), data=df2, nvmax=10)
+plot(bestsub2, scale=c("bic"))
+plot(bestsub2, scale=c("Cp"))
+plot(bestsub2, scale=c("adjr2"))
+coefficients(bestsub2, id=1)
+
+#lasso
+set.seed(1)
+lasso2.cv = cv.glmnet(X.model.matrix,y2)
+optimal.lambda2 = lasso2.cv$lambda.min
+plot(lasso2.cv)
+print(paste0("The optimal lambda value is ", round(optimal.lambda2,3)))
+predict(lasso2.cv, type="coefficients", s=optimal.lambda2 )
+```
+
+We find that best subset selection using $C_p$, adjusted $R^2$, and $BIC$ return poor results. With the exception of Mallow's $C_p$ (which only has the true model as the third best model), both the $R^2$ and $BIC$ suggest that the each of the ten best models are indistinguishable. One might default to the most parsimonious model for simplicity but the model selection tests give no strong evidence either way. The coefficient for the best one parameter model is for the $X^7$ term and is approximately the true value ($-2.99 \approx -3$). At $\lambda = 5.8$, the lasso regression correctly shrinks the model to the $X^7$ term with an approximately, though less accurate than the best subset derived coefficient estimate, accurate coefficient estimate ($-2.90 \approx -3$). The intercept calculation for the best subset model is also more accurate than the lasso estimate.
+
+### 9. In this exercise, we will predict the number of applications received using the other variables in the College data set.
+
+#### (a) Split the data set into a training set and a test set.
+```{r}
+library(ISLR)
+set.seed(1)
+train = sample(seq(1,nrow(College)),size=nrow(College)*.75, replace = FALSE)
+college.train = College[train,]
+college.test = College[-train,]
+```
+
+####(b) Fit a linear model using least squares on the training set, and report the test error obtained.
+```{r}
+RMSE = function(preds, test){
+  sqrt(mean((test - preds)^2))
+}
+
+lm = lm(Apps ~., data = college.train)
+lm.preds = predict(lm, newdata=college.test)
+RMSE(lm.preds,college.test$Apps)
+```
+
+The RMSE of the linear model is 1071.
+
+##### (c) Fit a ridge regression model on the training set, with $\lambda$ chosen by cross-validation. Report the test error obtained.
+```{r}
+set.seed(5)
+college.model.matrix.train = model.matrix(Apps ~ ., data= college.train)[,-1]
+college.model.matrix.test = model.matrix(Apps ~ ., data= college.test)[,-1]
+
+grid = 10 ^ seq(4, -2, length=100)
+ridge = cv.glmnet(college.model.matrix.train, 
+                  college.train$Apps, 
+                  alpha=0,
+                  lambda = grid)
+ridge = glmnet(college.model.matrix.train, college.train$Apps, lambda = ridge$lambda.min)
+ridge.preds = predict(ridge, newx=college.model.matrix.test)
+RMSE(ridge.preds,college.test$Apps)
+```
+
+The RMSE of the ridge regression modle is 1071.
+
+#### (d) Fit a lasso model on the training set, with $\lambda$ chosen by crossvalidation. Report the test error obtained, along with the number of non-zero coefficient estimates.
+```{r}
+set.seed(10)
+lasso = cv.glmnet(college.model.matrix.train, 
+                  college.train$Apps, 
+                  alpha=1,
+                  lambda = grid)
+lasso = glmnet(college.model.matrix.train, 
+               college.train$Apps, 
+               lambda =lasso$lambda.min)
+lasso.preds = predict(lasso, newx=college.model.matrix.test)
+RMSE(lasso.preds,college.test$Apps)
+predict(lasso, type="coefficients", s=lasso$lambda.min)
+```
+
+The RMSE pf the lasso regression modle is 1070. The lasso regression removed six variables from the full model.
+
+#### (e) Fit a PCR model on the training set, with M chosen by crossvalidation. Report the test error obtained, along with the value of M selected by cross-validation.
+```{r message=FALSE}
+library(pls)
+set.seed(1)
+pcr = pcr(Apps ~., data = college.train, 
+          scale=TRUE, 
+          validation="CV",
+          segments = 10)
+pcr$ncomp
+validationplot(pcr)
+pcr.preds = predict(pcr, newdata = college.test)
+RMSE(pcr.preds,college.test$Apps)
+```
+
+The PCR regression model selected 17 components with k=10 cross-validaiton. The RMSE of the model is 1548.
+
+#### (f) Fit a PLS model on the training set, with M chosen by cross-validation. Report the test error obtained, along with the value of M selected by cross-validation.
+```{r}
+set.seed(1)
+pls = plsr(Apps ~., data = college.train, 
+          scale=TRUE, 
+          validation="CV",
+          segments = 10)
+pls$ncomp
+validationplot(pls)
+pls.preds = predict(pls, newdata = college.test)
+RMSE(pls.preds,college.test$Apps)
+```
+
+The PLS regression model selected 17 components with k=10 cross-validaiton. The RMSE of the model is 1156.
+
+
+#### (g) Comment on the results obtained. How accurately can we predict the number of college applications received? Is there much difference among the test errors resulting from these five approaches?
+```{r}
+test_rmse = c(RMSE(lm.preds,college.test$Apps),
+               RMSE(ridge.preds,college.test$Apps),
+               RMSE(lasso.preds,college.test$Apps),
+               RMSE(pcr.preds,college.test$Apps),
+               RMSE(pls.preds,college.test$Apps))
+
+ridge_residuals = predict(ridge, newx=college.model.matrix.train) - college.train$Apps
+lasso_residuals = predict(lasso, newx=college.model.matrix.train) - college.train$Apps
+train_rmse = c(sqrt(mean(lm$residuals^2)),
+                sqrt(mean(ridge_residuals^2)),
+                sqrt(mean(lasso_residuals^2)),
+                sqrt(mean(pcr$residuals^2)),
+                sqrt(mean(pls$residuals^2)))
+
+table5 = data.frame("Train RMSE" = train_rmse, "Test RMSE" = test_rmse)
+row.names(table5) = c("OLS", "Ridge", "Lasso", "PCR", "PLS")
+knitr::kable(table5, caption ="Comparison of College Application Models")
+```
+
+The lasso, ridge, and OLS regressions all had similar root means square test  errors. Using this approach, the PCR regression performed the worst following the PLS regression. 
+
+### 10. We have seen that as the number of features used in a model increases, the training error will necessarily decrease, but the test error may not. We will now explore this in a simulated data set.
+
+#### (a) Generate a data set with $p = 20$ features, $n = 1000$ observations, and an associated quantitative response vector generated according to the model $Y = X\beta + \epsilon$ where $\beta$ has some elements that are exactly zero.
+```{r}
+library(mvtnorm)
+set.seed(10)
+mu = rep(0,20)
+sigma = diag(1,20)
+X = rmvnorm(1000,mean = mu, sigma = sigma)
+betas = sample(-10:10, size = 20, replace=TRUE)
+betas[10] = 0
+betas[17] = 0
+betas
+e = rnorm(n = 1000, 0, sd=1)
+y = X%*%betas + e
+df.sim = data.frame(x = X, y = y)
+```
+
+#### (b) Split your data set into a training set containing 100 observations and a test set containing 900 observations.
+```{r}
+train = sample(1:1000, size = length(y)*.75, replace = FALSE)
+df.sim.train = df.sim[train,]
+df.sim.test = df.sim[-train,]
+```
+
+#### (c) Perform best subset selection on the training set, and plot the training set MSE associated with the best model of each size.
+```{r}
+bestsub.sim = regsubsets(y ~ .,data=df.sim.train, nvmax = 20)
+plot(1:21, bestsub.sim$rss/length(df.sim.train$y),
+     xlab = "Model Size",
+     ylab = "MSE",
+     main = "Training MSE of Best Subset Models by Size",
+     type ="l")
+```
+
+#### (d) Plot the test set MSE associated with the best model of each size.
+```{r}
+MSE = function(preds, test){
+  mean((test - preds)^2)
+}
+
+predict.regsubsets = function(object, newdata, id, ...) {
+    form = as.formula(object$call[[2]])
+    mat = model.matrix(form, newdata)
+    coefi = coef(object, id = id)
+    mat[, names(coefi)] %*% coefi
+}
+bestsub.mse = rep(NA,20)
+for (i in 1:20){
+  bestsub.preds = predict.regsubsets(bestsub.sim, df.sim.test, id=i)
+  bestsub.mse[i] = MSE(bestsub.preds,df.sim.test$y) 
+}
+
+plot(1:20, bestsub.mse,
+     xlab = "Model Size",
+     ylab = "MSE",
+     main = "Test MSE of Best Subset Models by Size",
+     type ="l")
+```
+
+#### (e) For which model size does the test set MSE take on its minimum value? Comment on your results. If it takes on its minimum value for a model containing only an intercept or a model containing all of the features, then play around with the way that you are generating the data in (a) until you come up with a scenario in which the test set MSE is minimized for an intermediate model size.
+```{r}
+which.min(bestsub.mse)
+```
+
+Model size 16 has the smallest test MSE.
+
+### (f) How does the model at which the test set MSE is minimized compare to the true model used to generate the data? Comment on the coefficient values.
+```{r}
+betas
+coefficients(bestsub.sim, id=16)
+```
+
+In the true model $X_3,\;X_4,\;X_{10},\;$ and $X_{17}$ have coefficients of zero. The best subset for size 16 removes these variables from the model and the coefficient. The coefficient estimates are appoximately the same as the true model values.
+
+#### (g) Create a plot displaying $\sqrt{\Sigma_{j=1}^p (\beta_j - \hat{\beta_j^r}^2}$ for a range of values of $r$, where $\hat{\beta_j^r}$ is the jth coefficient estimate for the best model containing r coefficients. Comment on what you observe. How does his compare to the MSE plot from (d)?
+```{r message=FALSE, warning=FALSE}
+beta_error = rep(NA,20)
+for (i in 1:20){
+  vars = names(df.sim) %in% names(coefficients(bestsub.sim, id=i))
+  est_coef = coefficients(bestsub.sim, id=i)[-1]
+  true_coef = betas[names(df.sim) %in% names(coefficients(bestsub.sim, id=i))]
+  beta_error[i] = sqrt(sum((true_coef - est_coef)^2))
+}
+plot(1:20, beta_error, xlab = "Model Size",
+                       ylab = latex2exp("$\\sqrt{\\Sigma_{j=1}^p (\\beta_j - \\hat{\\beta_j^r)^2}$"),
+                       type="l")
+which.min(beta_error)
+```
+
+This plot increases substantially and then deceases, in contrast to the plot in part (d) which is monotonically decreasing for much of the plot until it hits its minimum and then rises slightly. This plot hits a minimum at model size 16 so both plots confirm that model size 16 is optimal.
+
+### 11. We will now try to predict per capita crime rate in the Boston data set.
+
+#### (a) Try out some of the regression methods explored in this chapter, such as best subset selection, the lasso, ridge regression, and PCR. Present and discuss results for the approaches that you consider.
+```{r}
+library(MASS)
+test.rmse = rep(NA,5)
+
+#training and test set
+set.seed(500)
+train = sample(1:nrow(Boston), size =nrow(Boston)*.75, replace=FALSE)
+boston.train = Boston[train,]
+boston.test = Boston[-train,]
+
+#best subset
+boston.bestsub = regsubsets(crim ~., data = boston.train, nvmax = ncol(Boston)-1)
+plot(boston.bestsub)
+plot(boston.bestsub, scale="Cp")
+plot(boston.bestsub, scale="adjr2")
+
+#test rmse
+boston.bestsub.preds = predict(boston.bestsub, newdata=boston.test, id=3)
+test.rmse[1] = RMSE(boston.bestsub.preds,boston.test$crim)
+```
+
+```{r}
+#ridge
+set.seed(1)
+boston.X.train = model.matrix(crim ~., data=boston.train)[,-1]
+boston.X.test = model.matrix(crim ~., data=boston.test)[,-1]
+boston.ridge = cv.glmnet(x = boston.X.train, y=boston.train$crim, alpha=0, lambda=grid)
+boston.ridge = glmnet(x =boston.X.train, y=boston.train$crim, lambda=boston.ridge$lambda.min)
+
+#test rmse
+boston.ridge.preds = predict(boston.ridge, newx=boston.X.test)
+test.rmse[2] = RMSE(boston.ridge.preds,boston.test$crim)
+
+#lasso
+set.seed(1)
+boston.lasso = cv.glmnet(x = boston.X.train, y=boston.train$crim, alpha=1, lambda=grid)
+boston.lasso = glmnet(x =boston.X.train, y=boston.train$crim, lambda=boston.lasso$lambda.min)
+
+#test rmse
+boston.lasso.preds = predict(boston.lasso, newx=boston.X.test)
+test.rmse[3] = RMSE(boston.lasso.preds,boston.test$crim)
+
+#PCR
+set.seed(340)
+boston.pcr = pcr(crim ~., data = boston.train,
+                 scale=TRUE, 
+                 validation="CV",
+                 segments = 10)
+
+boston.pcr.preds = predict(boston.pcr, newdata=boston.test)
+test.rmse[4] = RMSE(boston.pcr.preds,boston.test$crim)
+
+#PCR
+set.seed(450)
+boston.pls = plsr(crim ~., data = boston.train,
+                 scale=TRUE, 
+                 validation="CV",
+                 segments = 10)
+
+boston.pls.preds = predict(boston.pcr, newdata=boston.test)
+test.rmse[5] = RMSE(boston.pcr.preds,boston.test$crim)
+```
+
+#### (b) Propose a model (or set of models) that seem to perform well on this data set, and justify your answer. Make sure that you are evaluating model performance using validation set error, cross-validation, or some other reasonable alternative, as opposed to using training error.
+```{r}
+test.rmse = data.frame(matrix(round(test.rmse,3), nrow =1, ncol=5))
+colnames(test.rmse) = c("Best Subset", "Ridge", "Lasso", "PCR", "PLS")
+knitr::kable(test.rmse, caption = "Model Performance")
+```
+
+The model with the lowerst test root mean squared error is the lasso regression model.
+
+#### (c) Does your chosen model involve all of the features in the data set? Why or why not?
+```{r}
+coefficients(boston.lasso)
+```
+
+The chosen lasso model has removed the tax variable. This is because the model uses penalized regression to shrink paramters to zero that are not predictive of the response variable.

@@ -1,11 +1,14 @@
 ---
-title: "Chapter 3 Excercises"
+title: "ISL Chapter 3 Excercises"
 author: "Jonathan Bryan"
 date: "July 26, 2017"
 output:
   pdf_document: default
   html_document: default
 ---
+```{r echo = FALSE}
+knitr::opts_chunk$set(fig.width=8, fig.height=5) 
+```
 
 ### 1. Describe the null hypotheses to which the p-values given in Table 3.4 correspond. Explain what conclusions you can draw based on these p-values. Your explanation should be phrased in terms of sales, TV, radio, and newspaper, rather than in terms of the coefficients of the linear model.
 The null hypothesis tested for the coefficients in the linear regression model asserts that there is no relationship between the predictor and the response variable, which mathematically means the coefficient is zero. At an alpha level of 0.05 we can say that both TV and radio advertising spending are significant predictors for the sales response variable. More specifically, the model says that every dollar towards TV advertising is associated with an additional \$46 in sales and every  dollar towards radio advertising is associated with \$189 dollars in sales.
