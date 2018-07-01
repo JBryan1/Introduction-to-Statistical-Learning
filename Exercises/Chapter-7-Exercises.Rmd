@@ -1,0 +1,275 @@
+---
+title: "ISL Chapter 7 Exercises"
+author: "Jonathan Bryan"
+date: "June 29, 2018"
+output: pdf_document
+---
+
+
+### 1. It was mentioned in the chapter that a cubic regression spline with one knot at $\xi$ can be obtained using a basis of the form $x, x^2, x^3, (x - \xi)^3_+$, where $(x - \xi)^3_+ = (x - \xi)^3$ if $x > \xi$ and equals $0$ otherwise. We will now show that a function of the form $f(x) = \beta0 + \beta_1x + \beta_2x^2 + \beta_3x^3 + \beta_4(x - \xi)^3_+$ is indeed a cubic regression spline, regardless of the values of $\beta_0, \beta_1, \beta_2, \beta_3, \beta_4$.
+
+####(a) Find a cubic polynomial $f_1(x) = a_1 + b_1x + c_1x^2 + d_1x^3$ such that $f(x) = f_1(x)$ for all $x \leq \xi$. Express $a_1, b_1, c_1, d_1$ in terms of $\beta_0, \beta_1, \beta_2, \beta_3, \beta_4$.
+$$
+\begin{aligned}
+f_1(x) &= \beta_0 + \beta_1x + \beta_2x^2 + \beta_3x^3 + (x - \xi)^3_+\\
+f_1(x) &= \beta_0 + \beta_1x + \beta_2x^2 + \beta_3x^3,\; \forall \; x \leq \xi\\
+a_1 &= \beta_0,\; b_1 = \beta_1,\; c_1 = \beta_2,\; d_1 = \beta_3
+\end{aligned}
+$$
+####(b) Find a cubic polynomial $f_2(x) = a_2 + b_2x + c_2x^2 + d_2x^3$ such that $f(x) = f_2(x)$ for all $x > \xi$. Express $a_2, b_2, c_2, d_2$ in terms of $\beta_0, \beta_1, \beta_2, \beta_3, \beta_4$. We have now established that $f(x)$ is a piecewise polynomial.
+$$
+\begin{aligned}
+f_2(x) &= \beta_0 + \beta_1x + \beta_2x^2 + \beta_3x^3 + \beta_4(x - \xi)^3_+\\
+f_2(x) &= \beta_0 + \beta_1x + \beta_2x^2 + \beta_3x^3 + \beta_4(x - \xi)(x^2 - 2x\xi + \xi^2)\\
+f_2(x) &= \beta_0 + \beta_1x + \beta_2x^2 + \beta_3x^3 + \beta_4(x^3 - 2x^2\xi + x\xi^2 - x^2\xi + 2x\xi^2 - \xi^3)\\
+f_2(x) &= \beta_0 + \beta_1x + \beta_2x^2 + \beta_3x^3 + \beta_4(x^3 - 3x^2\xi + 3x\xi^2 - \xi^3)\\
+f_2(x) &= \beta_0 - \beta_4\xi^3 + (\beta_1 + 3\beta_4\xi^2)x + (\beta_2 - 3\beta_4\xi)x^2 + (\beta_3 + \beta_4)x^3\\
+a_2 &= \beta_0 - \beta_4\xi^3,\; b_2 = \beta_1 + 3\beta_4\xi^2,\; c_2 = \beta_2 - 3\beta_4\xi,\; d_1 = \beta_3 + \beta_4
+\end{aligned}
+$$
+
+####(c) Show that $f_1(\xi) = f_2(\xi)$. That is, $f(x)$ is continuous at $\xi$. 
+$$
+\begin{aligned}
+f_1(\xi) &= \beta_0 + \beta_1\xi + \beta_2\xi^2 + \beta_3\xi^3\\ \\
+f_2(x) &= \beta_0 - \beta_4\xi^3 + \beta_1\xi + 3\beta_4\xi^3 + \beta_2\xi^2 - 3\beta_4\xi^3 + \beta_3\xi^3 + \beta_4\xi^3\\
+f_2(x) &= \beta_0 + \beta_1\xi + \beta_2\xi^2 + \beta_3\xi^3 + (\beta_4\xi^3  + 3\beta_4\xi^3  - 3\beta_4\xi^3 - \beta_4\xi^3)\\
+f_2(x) &= \beta_0 + \beta_1\xi + \beta_2\xi^2 + \beta_3\xi^3\\ 
+f_1(\xi) &= f_2(\xi)
+\end{aligned}
+$$
+
+
+####(d) Show that $f_1'(\xi) = f_2'(\xi)$. That is, $f(x)$ is continuous at $\xi$. 
+$$
+\begin{aligned}
+f_1'(x) &= \beta_1 + 2\beta_2x + 3\beta_3x^2\\
+f_1'(\xi) &= \beta_1 + 2\beta_2\xi + 3\beta_3\xi^2\\ \\
+f_2'(x) &= \beta_1 + 3\beta_4\xi^2 + 2\beta_2x - 6\beta_4\xi x + 3\beta_3x^2 + 3\beta_4x^2\\
+f_2'(x) &= \beta_1 + 2\beta_2x + 3\beta_3x^2 + 3\beta_4x^2 + 3\beta_4\xi^2 - 6\beta_4\xi x\\
+f_2'(\xi) &= \beta_1 + 2\beta_2\xi + 3\beta_3\xi^2 + (3\beta_4\xi^2 + 3\beta_4\xi^2 - 6\beta_4\xi^2)\\
+f_2'(\xi) &= \beta_1 + 2\beta_2\xi + 3\beta_3\xi^2\\
+f_1'(\xi) &= f_2'(\xi)
+\end{aligned}
+$$
+#### (e) Show that $f_1''(\xi) = f_2''(\xi)$ . That is, $f''(x)$ is continuous at $\xi$. Therefore, $f(x)$ is indeed a cubic spline.
+$$
+\begin{aligned}
+f_1''(x) &= 2\beta_2 + 6\beta_3x\\
+f_1''(\xi) &= 2\beta_2 + 6\beta_3\xi\\ \\
+f_2''(x) &= 2\beta_2 + 6\beta_3x + 6\beta_4x - 6\beta_4\xi\\
+f_2''(\xi) &= 2\beta_2 + 6\beta_3\xi + 6\beta_4\xi - 6\beta_4\xi\\
+f_2''(\xi) &= 2\beta_2 + 6\beta_3\xi\\
+f_1''(\xi) &= f_2''(\xi)
+\end{aligned}
+$$
+
+### 2. Suppose that a curve $\hat{g}$ is computed to smoothly fit a set of n points using the following formula:$$\hat{g} = arg \underset{g}{min} (\Sigma_{i=1}^n (y_i - g(x_i))^2 + \lambda \int [g^{(m)}]^2\; dx)$$ where $g^(m)$ represents the mth derivative of $g$(and $g^(0) = g$). Provide example sketches of \hat{g} in each of the following scenarios.
+
+#### (a) $\lambda= \infty,m = 0$.
+```{r}
+#create data
+set.seed(1)
+x = seq(-1,4,by=0.5)
+e = rnorm(11,0,1)
+y = (x-1)^2 + e
+```
+
+```{r}
+plot(x,y,
+     main = expression(paste(lambda, " = ",infinity, ", m = 0")))
+abline(h = 0, col="red")
+```
+
+#### (b) $\lambda= \infty,m = 1$.
+```{r}
+plot(x,y,
+     main = expression(paste(lambda, " = ",infinity, ", m = 1")))
+abline(h = mean(y), col="red")
+```
+
+#### (b) $\lambda= \infty,m = 2$.
+```{r}
+plot(x,y,
+     main = expression(paste(lambda, " = ",infinity, ", m = 2")))
+abline(lm(y ~ x), col="red")
+```
+
+#### (b) $\lambda= \infty,m = 3$.
+```{r}
+plot(x,y,
+     main = expression(paste(lambda, " = ",infinity, ", m = 2")))
+quad = lm(y ~ poly(x,2,raw=TRUE))
+lines(x, predict(quad), col="red")
+```
+
+#### (b) $\lambda= \infty,m = 3$.
+```{r}
+plot(x,y,
+     main = expression(paste(lambda, " = ",infinity, ", m = 2")))
+spline = smooth.spline(x, y, df=11)
+lines(predict(spline), col="red")
+```
+
+### 3.Suppose we fit a curve with basis functions $b_1(X) = X,\; b_2(X) = (X - 1)^2\;I(X \geq 1)$. (Note that I(X \geq 1) equals $1$ for $X \geq 1$ and $0$ otherwise.) We fit the linear regression model $Y = \beta_0 + \beta_1b_1(X) + \beta_2b_2(X) + \epsilon$,and obtain coefficient estimates $\hat{\beta_0} = 1, \hat{\beta_1} = 1, \hat{\beta_2} = -2$. Sketch the estimated curve between $X = -2$ and $X = 2$. Note the intercepts, slopes, and other relevant information.
+```{r}
+x = seq(-2,2,by=1)
+y = 1 + x -2*(x-1)^2*(x >= 1)
+plot(x,y, 
+     type="l", 
+     col="red",
+     main = expression(paste(y," = ", 1 + x -2*(x-1)^2*(x >= 1))))
+```
+
+From $X=-2$ to $X=1$ the intercept is 1 and slope is 1. When $X \geq 1$ the function becomes quadratic. The intecept is now 3, and the slope is now $4X-3$.
+
+
+### 4.Suppose we fit a curve with basis functions $b_1(X) = I(0 \leq X \leq 2) - (X-1)I(1 \leq X \leq 2),\; b_2(X) = (X-3)I(3 \leq X \leq 4) + I(4 \leq X \leq 5)$. We fit the linear regression model $Y = \beta_0 + \beta_1b_1(X) + \beta_2b_2(X) + \epsilon$,and obtain coefficient estimates $\hat{\beta_0} = 1, \hat{\beta_1} = 1, \hat{\beta_2} = 3$. Sketch the estimated curve between $X = -2$ and $X = 2$. Note the intercepts, slopes, and other relevant information.
+
+```{r}
+x = seq(-2,2,by=1)
+y = 1 + I((0 <= x) & (x <= 2)) - (x-1)*I((1 <= x) & (x <= 2)) +  3*((x-3)*I((3 <= x) & (x <= 4)) + I((4 <= x) &  (x <= 5)))
+plot(x,y, 
+     type="l", 
+     col="red"
+)
+```
+
+From $X=-2$ to $X=-1$ the slope is 0 and the intercept is 1. From $X=-1$ to $X=0$  the slope is 1 and the intercept is 2. From $X=0$ to $X=1$ the slope is 0 and the intercept is 2. From $X=1$ to $X=2$ the slope is -1 and the intercept is 3.
+
+### 5. Consider two curves, \hat{g_1} and \hat{g_2}, defined by $$\hat{g_1} = arg \underset{g}{min} (\Sigma_{i=1}^n (y_i - g(x_i))^2 + \lambda \int [g^{(3)}]^2\; dx)$$ $$\hat{g_2} = arg \underset{g}{min} (\Sigma_{i=1}^n (y_i - g(x_i))^2 + \lambda \int [g^{(4)}]^2\; dx)$$ where $g^(m)$ represents the $m$th derivative of $g$.
+
+#### (a) As $\lambda \to \infty$, will \hat{g_1} or \hat{g_2} have the smaller training RSS?
+
+As $\lambda$ approaches infinity and the degree of derivative increases in the penalized part of the optimization problem the flexibility of the model parameter's increases. Therefore, $\hat{g_2}$ will be more flexible and fit the training data better resulting in a lower training RSS.
+
+#### (b) As $\lambda \to \infty$, will \hat{g_1} or \hat{g_2} have the smaller test RSS?
+
+Because $\hat{g_1}$ is the less flexible model it will most likely have a lower variance and slightly higher bias resulting in a smaller test RSS.
+
+#### (c) For $\lambda = 0$, will \hat{g_1} or \hat{g_2} have the smaller training and test RSS?
+
+Both models will have the same training and test RSS because the penality is removed and the result is the same interpolating spline.
+
+### 6. In this exercise, you will further analyze the Wage data set considered throughout this chapter.
+
+#### (a) Perform polynomial regression to predict wage using age. Use cross-validation to select the optimal degree $d$ for the polynomial. What degree was chosen, and how does this compare to the results of hypothesis testing using ANOVA? Make a plot of the resulting polynomial fit to the data.
+```{r}
+library(ISLR)
+set.seed(570)
+
+rmse = function(preds, true){
+  sqrt(sum((preds - true)^2)/length(true))
+}
+
+#initialize polynomial degrees, cv_rmse, and model lists
+k = 5 #5-fold cross-validation
+p = seq(1,10, by= 1)
+mean.cv.rmse = rep(NA, length(p))
+fit = rep(NA, length(p))
+
+#fit polynomial models
+for (i in 1:length(p)){
+  cv.rmse = rep(NA, k)
+  #5-fold CV
+  for (j in 1:k){
+    train = sample(1:nrow(Wage), nrow(Wage)*0.80, replace = FALSE)
+    wage.train = Wage[train,]
+    wage.test = Wage[-train,]
+    preds = predict(lm(wage ~ poly(age,i, raw=TRUE), 
+                       data = wage.train), 
+                    newdata=wage.test)
+    cv.rmse[j] = rmse(preds, wage.test$wage)
+  }
+  mean.cv.rmse[i] = mean(cv.rmse)
+}
+
+table1 = data.frame("Mean CV RMSE" = round(mean.cv.rmse,3))
+rownames(table1) = seq(1,10,by=1)
+knitr::kable(table1, caption = "Polynomial Regression Cross-validation")
+#ANOVA
+anova(lm(wage ~ poly(age,1, raw=TRUE), data = Wage),
+      lm(wage ~ poly(age,2, raw=TRUE), data = Wage),
+      lm(wage ~ poly(age,3, raw=TRUE), data = Wage),
+      lm(wage ~ poly(age,4, raw=TRUE), data = Wage),
+      lm(wage ~ poly(age,5, raw=TRUE), data = Wage),
+      lm(wage ~ poly(age,6, raw=TRUE), data = Wage),
+      lm(wage ~ poly(age,7, raw=TRUE), data = Wage),
+      lm(wage ~ poly(age,8, raw=TRUE), data = Wage),
+      lm(wage ~ poly(age,9, raw=TRUE), data = Wage),
+      lm(wage ~ poly(age,10, raw=TRUE), data = Wage))
+```
+
+The model with the lowest cross-validated root mean square error using 5-fold cross-validation was a five-degree polynomial age model. ANOVA analysis suggests a quadratic model explains most of the variance between wages and age. The cross-validated root mean square errors for each polynomial model of age were very close, however, the quadratic model did have the highest value. This is contradictory to the ANOVA findings. We plot both the quadratic and five-degree polynomial models below.
+
+```{r}
+poly2 = lm(wage ~ poly(age,2, raw=TRUE), data = Wage)
+poly5 = lm(wage ~ poly(age,5, raw=TRUE), data = Wage)
+
+preds.poly2 = predict(poly2, newdata=list(age=age.grid), se=TRUE)
+poly2.se.bands = cbind(preds.poly2$fit + 2*preds.poly2$se.fit, preds.poly2$fit - 2*preds.poly2$se)
+
+preds.poly5 = predict(poly5, newdata=list(age=age.grid), se=TRUE)
+poly5.se.bands = cbind(preds.poly5$fit + 2*preds.poly5$se.fit, preds.poly5$fit - 2*preds.poly5$se)
+
+agelims = range(Wage$age)
+age.grid = seq(from = agelims[1], to=agelims[2])
+
+plot(Wage$age, Wage$wage,
+     xlab = "Wage",
+     ylab= "Age",
+     main = "Wage Modeling with Polynomial Regression of Age")
+lines(age.grid, preds.poly2$fit, lwd = 2, col = "red")
+matlines(age.grid,poly2.se.bands, lwd=1,col="red", lty = 3)
+lines(age.grid, preds.poly5$fit, lwd = 2, col = "blue")
+matlines(age.grid,poly5.se.bands, lwd=1,col="blue", lty = 3)
+legend("topright", legend = c("Age 2-Poly", "Age 5-Poly"),
+       col = c("red", "blue"),
+       lty = 1,
+       lwd = 2
+       )
+```
+
+#### (b) Fit a step function to predict wage using age, and perform cross-validation to choose the optimal number of cuts. Make a plot of the fit obtained.
+```{r}
+set.seed(100)
+#initialize cuts, cv_rmse, and model lists
+k = 5 #5-fold cross-validation
+p = seq(1,10, by= 1)
+mean.cv.rmse = rep(NA, length(p) - 1)
+fit = rep(NA, length(p))
+
+#fit step function models
+for (i in 2:length(p)){
+  cv.rmse = rep(NA, k)
+  #5-fold CV
+  for (j in 1:k){
+    train = sample(1:nrow(Wage), nrow(Wage)*0.80, replace = FALSE)
+    wage.train = Wage[train,]
+    wage.test = Wage[-train,]
+    preds = predict(lm(wage ~ cut(age,i),
+                       data = Wage,
+                       subset = train), 
+                    newdata=cut(wage.test$age,i))
+    cv.rmse[j] = rmse(preds, wage.test$wage)
+  }
+  mean.cv.rmse[i] = mean(cv.rmse)
+}
+
+mean.cv.rmse = mean.cv.rmse[-1]
+table2 = data.frame("Mean CV RMSE" = round(mean.cv.rmse,3))
+rownames(table2) = seq(2,10,by=1)
+knitr::kable(table2, caption = "Step Function Regression Cross-validation")
+```
+
+The 4-cut step function model of age has the lowest cross-validated root mean square error. A plot of the function is below.
+```{r}
+cut4 = lm(wage ~ cut(age,4), data = Wage, subset = train)
+
+preds.cut4 = predict(cut4, newdata=list(age=age.grid), se=TRUE)
+cut4.se.bands = cbind(preds.cut4$fit + 2*preds.cut4$se.fit, preds.cut4$fit - 2*preds.cut4$se)
+
+plot(Wage$age, Wage$wage)
+lines(age.grid, preds.cut4$fit, col ="green", lwd =2)
+matlines(age.grid, cut4.se.bands, col ="green", lwd=1)
+```
