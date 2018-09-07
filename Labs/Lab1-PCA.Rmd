@@ -1,0 +1,91 @@
+---
+title: 'Lab 1: Principal Components Analysis'
+author: "Jonathan Bryan"
+date: "August 31, 2018"
+output: pdf_document
+---
+```{r echo = FALSE}
+knitr::opts_chunk$set(fig.width=8, fig.height=5) 
+```
+
+```{r}
+states = row.names(USArrests)
+states
+```
+
+```{r}
+names(USArrests)
+```
+
+```{r}
+#examine mean and variance of variables
+apply(USArrests, 2 , mean)
+apply(USArrests, 2 , var)
+```
+
+```{r}
+#PCA
+pr.out = prcomp(USArrests, scale = TRUE)
+names(pr.out)
+
+#variable means
+pr.out$center
+
+#variable sd
+pr.out$scale
+
+#variable loading vectors
+pr.out$rotation
+
+#dimensions of n x m score vectors
+dim(pr.out$x)
+```
+
+
+```{r}
+#plot of first two principal components
+biplot(pr.out, scale = 0)
+```
+
+```{r}
+#flipping principal components
+pr.out$rotation = -pr.out$rotation
+pr.out$x = -pr.out$x
+biplot(pr.out, scale = 0)
+```
+
+```{r}
+#principal component sd
+round(pr.out$sdev,2)
+
+#principal component var
+pr.var = pr.out$sdev^2
+round(pr.var,2)
+```
+
+```{r}
+#proportion variance explained
+pve = pr.var/sum(pr.var)
+round(pve,2)
+```
+
+```{r}
+par(mfrow = c(1,2))
+plot(pve, 
+     xlab = "Principal Component",
+     ylab = "Proportion of Variance Explained",
+     ylim = c(0,1),
+     type = "b")
+
+plot(cumsum(pve),
+     xlab = "Principal Component",
+     ylab = "Cumulative Proportion of Variance Explained",
+     ylim = c(0,1),
+     type = "b")
+```
+
+```{r}
+#cumulative sum function
+a = c(1,2,8,-3)
+cumsum(a)
+```
